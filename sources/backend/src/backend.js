@@ -6,24 +6,24 @@
 // =============================================================================
 
 // load the packages we need
-var express = require('express');
-var bodyParser = require('body-parser');
-var fs = require('fs');
-var path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const fs = require('fs');
+const path = require('path');
 
-var app = express();                 // define our app using express
-var USERS = path.join(__dirname, 'users.json');
-var PETS = path.join(__dirname, 'pets.json');
+const app = express();                 // define our app using express
+const USERS = path.join(__dirname, 'users.json');
+const PETS = path.join(__dirname, 'pets.json');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 
 app.set('port', process.env.PORT || 9090);        // set our port
 
 // MIDDLEWARE for accessing the server from other servers
-app.use(function(req, res, next) {
-    console.log("in middleware!");
+app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 'no-cache');
   next();
@@ -31,10 +31,10 @@ app.use(function(req, res, next) {
 
 // ROUTES FOR OUR API
 // =============================================================================
-var router = express.Router();              // get an instance of the express Router
+const router = express.Router();              // get an instance of the express Router
 
 function readData(DATAFILE, next, callback) {
-    fs.readFile(DATAFILE, 'utf8', function(err, data) {
+    fs.readFile(DATAFILE, 'utf8', (err, data) => {
         if (err || !data) { return next(err); }
 
         callback(JSON.parse(data));
@@ -42,46 +42,46 @@ function readData(DATAFILE, next, callback) {
 }
 
 function writeData(DATAFILE, data, res, next, message) {
-    fs.writeFile(DATAFILE, JSON.stringify(data), function(err) {
+    fs.writeFile(DATAFILE, JSON.stringify(data), err => {
         if (err) { return next(err); }
         res.json({message: message});
     });
 }
 
 // test route to make sure everything is working (accessed at GET http://localhost:5555/api)
-router.get('/', function (req, res) {
+router.get('/', (req, res) => {
   res.json({message: 'hooray! welcome to our api!'});
 });
 
-router.get('/pets', function(req, res, next) {
-  readData(PETS, next, function(data){ return res.json(data); });
+router.get('/pets', (req, res, next) => {
+  readData(PETS, next, data => res.json(data));
 });
 
-router.post('/pets', function(req, res, next) {
-  readData(PETS, next, function(pets) {
-    pets.push(req.body.pet);
+router.post('/pets', (req, res, next) => {
+  readData(PETS, next, (pets) => {
+    pets.push({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
     writeData(PETS, pets, res, next, "Pet successfully added");
   });
 });
 
-router.delete('/pets', function(req, res, next) {
-    readData(PETS, next, function(pets) {
+router.delete('/pets', (req, res, next) => {
+    readData(PETS, next, pets => {
         writeData(PETS, pets /* TODO */, res, next, "Pet successfully deleted");
     });
 });
 
 // -------------------------------------
 
-router.post('/user', function(req, res, next) {
-  fs.readFile(USERS, function(err, data) {
+router.post('/user', (req, res, next) => {
+  fs.readFile(USERS, (err, data) => {
     if (err || !data) { return next(err); }
-    var users = JSON.parse(data);
+    const users = JSON.parse(data);
     users.push({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       eMail: req.body.eMail
     });
-    fs.writeFile(USERS, JSON.stringify(users), function(err) {
+    fs.writeFile(USERS, JSON.stringify(users), err => {
       if (err) { return next(err); }
       res.json({message: "User successfully added."});
     });
@@ -93,6 +93,6 @@ app.use('/', router);
 
 // START THE SERVER
 // =============================================================================
-app.listen(app.get('port'), function () {
+app.listen(app.get('port'), () => {
   console.log('Connect to the server via http://localhost:' + app.get('port'));
 });
