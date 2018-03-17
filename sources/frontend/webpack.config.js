@@ -6,7 +6,7 @@ const localPort = "3000";
 const proxiedServer = "http://localhost:9090";
 
 module.exports = {
-    // mode: "development",
+    mode: "development",
     entry: [
         "./src-v2/index.tsx"
         //"./img/"
