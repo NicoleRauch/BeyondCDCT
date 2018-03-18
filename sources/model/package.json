@@ -1,0 +1,16 @@
+{
+  "name": "model",
+  "version": "0.0.0",
+  "private": true,
+  "main": "modelApp.js",
+  "engines": {
+    "node": "4.x.x"
+  },
+  "scripts": {
+    "start": "cd src && node modelApp.js"
+  },
+  "dependencies": {
+    "body-parser": "1.15.1",
+    "express": "4.13.4"
+  }
+}

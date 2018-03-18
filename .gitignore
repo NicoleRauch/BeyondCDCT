@@ -1,3 +1,5 @@
 .idea
 sources/frontend/dist
 sources/frontend/node_modules
+sources/backend/node_modules
+sources/model/node_modules
