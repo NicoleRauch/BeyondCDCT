@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "0.0.0",
   "private": true,
-  "main": "server.js",
+  "main": "backend.js",
   "engines": {
     "node": "4.x.x"
   },
