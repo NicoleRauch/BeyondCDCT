@@ -12,5 +12,10 @@
   "dependencies": {
     "body-parser": "1.15.1",
     "express": "4.13.4"
+  },
+  "devDependencies": {
+    "async": "2.6.0",
+    "axios": "0.18.0",
+    "request": "2.85.0"
   }
 }

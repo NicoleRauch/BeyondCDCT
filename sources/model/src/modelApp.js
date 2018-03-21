@@ -20,7 +20,7 @@ const app = express();                 // define our app using express
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.set('port', process.env.PORT || 9090);        // set our port
+app.set('port', process.env.PORT || 8080);        // set our port
 
 // MIDDLEWARE for accessing the server from other servers
 app.use((req, res, next) => {
