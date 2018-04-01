@@ -19,7 +19,7 @@ module.exports = {
   },
 
   savePet: function savePet(pet, callback) {
-    persistence.save(pet, callback);
+    persistence.insert(pet, callback);
   },
 
   removePet: function removePet(pet, callback) {

@@ -44,6 +44,7 @@ function readData(DATAFILE, next, callback) {
 }
 
 function writeData(DATAFILE, data, res, next, message) {
+
     fs.writeFile(DATAFILE, JSON.stringify(data), err => {
         if (err) { return next(err); }
         res.json({message: message});
@@ -60,10 +61,10 @@ router.get('/pets', (req, res, next) => {
 });
 
 router.post('/pets', (req, res, next) => {
-  readData(PETS, next, (err, pets) => {
-    pets.push({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
-    writeData(PETS, pets, res, next, "Pet successfully added");
-  });
+    petstore.savePet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType }, err => {
+       if(err) { return res.json({message: "Error when saving pet: " + err}); }
+    });
+    return res.json({message: "Pet successfully added."});
 });
 
 router.delete('/pets', (req, res, next) => {
