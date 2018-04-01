@@ -12,13 +12,16 @@ const petType = () => chooseFrom(possiblePetTypes);
 
 const generatePet = () => ({petName: petName(), petPrice: petPrice(), petType: petType()});
 
-const requestGenerator = [
-    // getPets
-    () => ({url: "/pets", method: "GET"}),
+const modifyingRequestGenerator = [
     // addPet
     () => ({url: "/pets", method: "POST", json: true, data: generatePet()}),
     // removePet
     () => ({url: "/pets", method: "DELETE", json: true, data: generatePet()}),
+];
+
+const comparisons = [
+    // getPets
+    () => ({url: "/pets", method: "GET"}),
 ];
 
 
@@ -27,29 +30,45 @@ const model = {baseURL: "http://localhost:8080"};
 
 let count = 0;
 
-const requestAndCompare = () => {
-    const req = chooseFrom(requestGenerator)();
+function runAgainstBackend(req) {
     let backendString;
     let modelString;
-    console.log("before");
+    console.log(req);
     axios(Object.assign(req, backend))
         .then(result => {
+            console.log(result.data)
             backendString = JSON.stringify(result.data);
         });
-    console.log(req);
-    console.log("after 1st");
+    console.log("after backend req")
     axios(Object.assign(req, model))
         .then(result => {
+            console.log(result.data)
             modelString = JSON.stringify(result.data);
         });
-    console.log(req);
-    console.log("after 2nd");
+    console.log("after model req")
+    console.log("results:", backendString, modelString)
+    return {backendString, modelString};
+}
 
+const requestAndCompare = () => {
+    const req = chooseFrom(modifyingRequestGenerator)();
+    let {backendString, modelString} = runAgainstBackend(req);
+
+    console.log("after all")
     if (backendString !== modelString) {
-        console.log("Backend result: ", backendString);
-        console.log("Model result: ", modelString);
+        console.log("Backend and Model differ!");
+        console.log("Backend request result: ", backendString);
+        console.log("Model request result: ", modelString);
     } else {
-        console.log("Backend and Model agree");
+        console.log("compare now")
+        const comparisonData = comparisons.map(comp => runAgainstBackend(comp()));
+        console.log("data:", comparisonData)
+        const nonmatching = comparisonData.filter(res => res.backendString !== res.modelString);
+        if(nonmatching.length === 0) {
+            console.log("Backend and Model agree");
+        } else {
+            console.log("Differences:", nonmatching);
+        }
     }
 };
 
