@@ -27,10 +27,6 @@ module.exports = {
       logger.info('Member removed:' + JSON.stringify(member));
       callback(err);
     });
-  },
-
-  isSoCraTesSubscriber: function isSoCraTesSubscriber(id, callback) {
-    subscriberPersistence.getById(id, (err, subscriber) => callback(err, !!subscriber));
   }
 };
 

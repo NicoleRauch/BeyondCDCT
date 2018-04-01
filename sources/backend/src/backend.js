@@ -57,7 +57,10 @@ router.get('/', (req, res) => {
 });
 
 router.get('/pets', (req, res, next) => {
-  readData(PETS, next, (err, pets) => res.json(pets));
+    petstore.allPets((err, pets) => {
+        if (err || !pets) { return next(err); }
+        return res.json(pets);
+    });
 });
 
 router.post('/pets', (req, res, next) => {
