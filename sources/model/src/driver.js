@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 
-const possiblePetNames = ["A", "B", "C", "D", "E"];
+const possiblePetNames = ["A", "B", "C"];
 const possiblePetTypes = ["Cat", "Dog", "Canary", "Rabbit", "Fish"];
 
 const chooseFrom = (arr) => arr[Math.floor(arr.length * Math.random())];
@@ -27,18 +27,25 @@ const model = {baseURL: "http://localhost:8080"};
 
 let count = 0;
 
-const requestAndCompare = async () => {
+const requestAndCompare = () => {
     const req = chooseFrom(requestGenerator)();
-    console.log("before await");
-    const backendResult = await axios(Object.assign(req, backend));
-    console.log("after 1st await");
-    const modelResult = await axios(Object.assign(req, model));
-    console.log("after 2nd await");
-
+    let backendString;
+    let modelString;
+    console.log("before");
+    axios(Object.assign(req, backend))
+        .then(result => {
+            backendString = JSON.stringify(result.data);
+        });
     console.log(req);
-    const backendString = JSON.stringify(backendResult.data);
-    const modelString = JSON.stringify(modelResult.data);
-    if(backendString !== modelString) {
+    console.log("after 1st");
+    axios(Object.assign(req, model))
+        .then(result => {
+            modelString = JSON.stringify(result.data);
+        });
+    console.log(req);
+    console.log("after 2nd");
+
+    if (backendString !== modelString) {
         console.log("Backend result: ", backendString);
         console.log("Model result: ", modelString);
     } else {
