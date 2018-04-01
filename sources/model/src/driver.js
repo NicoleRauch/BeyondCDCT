@@ -1,5 +1,5 @@
 const axios = require('axios');
-
+const async = require('async');
 
 const possiblePetNames = ["A", "B", "C"];
 const possiblePetTypes = ["Cat", "Dog", "Canary", "Rabbit", "Fish"];
@@ -30,50 +30,57 @@ const model = {baseURL: "http://localhost:8080"};
 
 let count = 0;
 
-function runAgainstBackend(req) {
-    let backendString;
-    let modelString;
+function runAgainstBackend(req, mainCallback) {
     console.log(req);
-    axios(Object.assign(req, backend))
-        .then(result => {
-            console.log(result.data)
-            backendString = JSON.stringify(result.data);
-        });
-    console.log("after backend req")
-    axios(Object.assign(req, model))
-        .then(result => {
-            console.log(result.data)
-            modelString = JSON.stringify(result.data);
-        });
-    console.log("after model req")
-    console.log("results:", backendString, modelString)
-    return {backendString, modelString};
+
+    async.parallel({
+        backendString: function(callback) {
+            axios(Object.assign(req, backend))
+                .then(result => {
+                    callback(JSON.stringify(result.data));
+                });
+        },
+        modelString: function(callback) {
+            axios(Object.assign(req, model))
+                .then(result => {
+                    callback(JSON.stringify(result.data));
+                });
+        }
+    }, mainCallback);
 }
 
-const requestAndCompare = () => {
-    const req = chooseFrom(modifyingRequestGenerator)();
-    let {backendString, modelString} = runAgainstBackend(req);
+const requestAndCompare = (item, callback) => {
 
-    console.log("after all")
-    if (backendString !== modelString) {
-        console.log("Backend and Model differ!");
-        console.log("Backend request result: ", backendString);
-        console.log("Model request result: ", modelString);
-    } else {
-        console.log("compare now")
-        const comparisonData = comparisons.map(comp => runAgainstBackend(comp()));
-        console.log("data:", comparisonData)
-        const nonmatching = comparisonData.filter(res => res.backendString !== res.modelString);
-        if(nonmatching.length === 0) {
-            console.log("Backend and Model agree");
+    // 1) request
+    runAgainstBackend(item, function (err, result) {
+        console.log("after all", result)
+        if (result.backendString !== result.modelString) {
+            console.log("Backend request result: ", backendString);
+            console.log("Model request result: ", modelString);
+            callback("Backend and Model differ!"); // error, bail out
         } else {
-            console.log("Differences:", nonmatching);
+            // 2) compare all data
+            async.map(comparisons, (itemFunc, callback) => runAgainstBackend(itemFunc(), callback),
+                function (err, results) {
+                console.log("after comparisons", results)
+                    const nonmatching = results.filter(res => res.backendString !== res.modelString);
+                    if(nonmatching.length === 0) {
+                        callback(null, "Backend and Model agree");
+                    } else {
+                        callback("Differences:" + JSON.stringify(nonmatching));
+                    }
+            });
         }
-    }
+    });
 };
+
+const requests = [];
 
 while (count < 10) {
     count++;
-    requestAndCompare();
+    requests.push(chooseFrom(modifyingRequestGenerator)());
 }
 
+async.map(requests, requestAndCompare, function(err, results) {
+   results.map(result => console.log(result));
+});
