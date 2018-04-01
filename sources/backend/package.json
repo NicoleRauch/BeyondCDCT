@@ -10,7 +10,10 @@
     "start": "cd src && node backend.js"
   },
   "dependencies": {
+    "async": "2.6.0",
     "body-parser": "1.15.1",
-    "express": "4.13.4"
+    "express": "4.13.4",
+    "mongodb": "2.2.33",
+    "ramda": "0.25.0"
   }
 }

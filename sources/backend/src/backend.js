@@ -11,6 +11,8 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 
+const petstore = require('./petstore');
+
 const app = express();                 // define our app using express
 const USERS = path.join(__dirname, 'users.json');
 const PETS = path.join(__dirname, 'pets.json');
@@ -34,10 +36,10 @@ app.use((req, res, next) => {
 const router = express.Router();              // get an instance of the express Router
 
 function readData(DATAFILE, next, callback) {
-    fs.readFile(DATAFILE, 'utf8', (err, data) => {
+    petstore.allPets((err, data) => {
         if (err || !data) { return next(err); }
 
-        callback(JSON.parse(data));
+        callback(null, data);
     });
 }
 
@@ -54,18 +56,18 @@ router.get('/', (req, res) => {
 });
 
 router.get('/pets', (req, res, next) => {
-  readData(PETS, next, data => res.json(data));
+  readData(PETS, next, (err, pets) => res.json(pets));
 });
 
 router.post('/pets', (req, res, next) => {
-  readData(PETS, next, (pets) => {
+  readData(PETS, next, (err, pets) => {
     pets.push({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
     writeData(PETS, pets, res, next, "Pet successfully added");
   });
 });
 
 router.delete('/pets', (req, res, next) => {
-    readData(PETS, next, pets => {
+    readData(PETS, next, (err, pets) => {
         writeData(PETS, pets /* TODO */, res, next, "Pet successfully deleted");
     });
 });
