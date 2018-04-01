@@ -1,5 +1,6 @@
-const axios = require('axios');
 const async = require('async');
+const request = require('request');
+
 
 const possiblePetNames = ["A", "B", "C"];
 const possiblePetTypes = ["Cat", "Dog", "Canary", "Rabbit", "Fish"];
@@ -30,20 +31,26 @@ const model = {baseURL: "http://localhost:8080"};
 
 let count = 0;
 
+function merge(req, server) {
+    return Object.assign({}, req, {url: server.baseURL + req.url});
+}
+
 function runAgainstBackend(req, mainCallback) {
-    console.log(req);
+    console.log("Now checking:", req);
 
     async.parallel({
-        backendString: function(callback) {
-            axios(Object.assign(req, backend))
-                .then(result => {
-                    callback(JSON.stringify(result.data));
+        backendString: function (callback) {
+            request(merge(req, backend),
+                function (err, response) {
+                    // console.log(err, response.body)
+                    callback(err, JSON.stringify(response.body));
                 });
         },
-        modelString: function(callback) {
-            axios(Object.assign(req, model))
-                .then(result => {
-                    callback(JSON.stringify(result.data));
+        modelString: function (callback) {
+            request(merge(req, model),
+                function (err, response) {
+                    // console.log(err, response.body)
+                    callback(err, JSON.stringify(response.body));
                 });
         }
     }, mainCallback);
@@ -51,25 +58,26 @@ function runAgainstBackend(req, mainCallback) {
 
 const requestAndCompare = (item, callback) => {
 
-    // 1) request
+    console.log("Running the modification request:");
+
     runAgainstBackend(item, function (err, result) {
-        console.log("after all", result)
         if (result.backendString !== result.modelString) {
-            console.log("Backend request result: ", backendString);
-            console.log("Model request result: ", modelString);
+            console.log("Backend request result: ", result.backendString);
+            console.log("Model request result: ", result.modelString);
             callback("Backend and Model differ!"); // error, bail out
         } else {
-            // 2) compare all data
+            console.log("Comparing all data:");
+
             async.map(comparisons, (itemFunc, callback) => runAgainstBackend(itemFunc(), callback),
                 function (err, results) {
-                console.log("after comparisons", results)
+                    console.log("after comparisons", results)
                     const nonmatching = results.filter(res => res.backendString !== res.modelString);
-                    if(nonmatching.length === 0) {
+                    if (nonmatching.length === 0) {
                         callback(null, "Backend and Model agree");
                     } else {
                         callback("Differences:" + JSON.stringify(nonmatching));
                     }
-            });
+                });
         }
     });
 };
@@ -81,6 +89,9 @@ while (count < 10) {
     requests.push(chooseFrom(modifyingRequestGenerator)());
 }
 
-async.map(requests, requestAndCompare, function(err, results) {
-   results.map(result => console.log(result));
+async.mapSeries(requests, requestAndCompare, function (err, results) {
+    results.map(result => console.log(result));
+    if (err) {
+        console.log(err);
+    }
 });

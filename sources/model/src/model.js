@@ -10,12 +10,12 @@ class Pets {
 
     addPet(pet) {
         this._pets.push(pet);
-        return "Pet successfully added";
+        return "Pet successfully added.";
     }
 
     removePet(pet) {
         this._pets = this._pets.filter(p => p.petName === pet.petName && p.petType === pet.petType);
-        return "Pet successfully removed";
+        return "Pet successfully removed.";
     }
 }
 
