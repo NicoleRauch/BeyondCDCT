@@ -35,22 +35,6 @@ app.use((req, res, next) => {
 // =============================================================================
 const router = express.Router();              // get an instance of the express Router
 
-function readData(DATAFILE, next, callback) {
-    petstore.allPets((err, data) => {
-        if (err || !data) { return next(err); }
-
-        callback(null, data);
-    });
-}
-
-function writeData(DATAFILE, data, res, next, message) {
-
-    fs.writeFile(DATAFILE, JSON.stringify(data), err => {
-        if (err) { return next(err); }
-        res.json({message: message});
-    });
-}
-
 // test route to make sure everything is working (accessed at GET http://localhost:5555/api)
 router.get('/', (req, res) => {
   res.json({message: 'hooray! welcome to our api!'});
@@ -59,7 +43,7 @@ router.get('/', (req, res) => {
 router.get('/pets', (req, res, next) => {
     petstore.allPets((err, pets) => {
         if (err || !pets) { return next(err); }
-        return res.json(pets);
+        return res.json({tag: "Pets", pets});
     });
 });
 
@@ -71,8 +55,10 @@ router.post('/pets', (req, res, next) => {
 });
 
 router.delete('/pets', (req, res, next) => {
-    readData(PETS, next, (err, pets) => {
-        writeData(PETS, pets /* TODO */, res, next, "Pet successfully deleted");
+    petstore.removePet({ petName: req.body.petName, petType: req.body.petType },
+    err => {
+        if(err){return res.json({message: "Error when removing pet: " + err})}
+        return res.json({message: "Pet successfully removed."});
     });
 });
 
