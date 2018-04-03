@@ -9,6 +9,7 @@ class Pets {
     }
 
     addPet(pet) {
+        console.log("model adding", pet)
         this._pets.push(pet);
         return "Pet successfully added.";
     }

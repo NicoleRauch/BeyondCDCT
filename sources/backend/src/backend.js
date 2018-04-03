@@ -26,9 +26,9 @@ app.set('port', process.env.PORT || 9090);        // set our port
 
 // MIDDLEWARE for accessing the server from other servers
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Cache-Control', 'no-cache');
-  next();
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Cache-Control', 'no-cache');
+    next();
 });
 
 // ROUTES FOR OUR API
@@ -37,7 +37,7 @@ const router = express.Router();              // get an instance of the express 
 
 // test route to make sure everything is working (accessed at GET http://localhost:5555/api)
 router.get('/', (req, res) => {
-  res.json({message: 'hooray! welcome to our api!'});
+    res.json({message: 'hooray! welcome to our api!'});
 });
 
 router.get('/pets', (req, res, next) => {
@@ -48,36 +48,57 @@ router.get('/pets', (req, res, next) => {
 });
 
 router.post('/pets', (req, res, next) => {
-    petstore.savePet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType }, err => {
-       if(err) { return res.json({message: "Error when saving pet: " + err}); }
+    console.log("backend add pet:", req.body)
+    petstore.savePet({petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType}, err => {
+        if (err) {
+            return res.json({message: "Error when saving pet: " + err});
+        }
     });
     return res.json({message: "Pet successfully added."});
 });
 
 router.delete('/pets', (req, res, next) => {
-    petstore.removePet({ petName: req.body.petName, petType: req.body.petType },
-    err => {
-        if(err){return res.json({message: "Error when removing pet: " + err})}
-        return res.json({message: "Pet successfully removed."});
-    });
+    petstore.removePet({petName: req.body.petName, petType: req.body.petType},
+        err => {
+            if (err) {
+                return res.json({message: "Error when removing pet: " + err})
+            }
+            return res.json({message: "Pet successfully removed."});
+        });
+});
+
+// ==================================================================================
+
+router.delete('/reset', (req, res, next) => {
+    petstore.removeAllPets(
+        err => {
+            if (err) {
+                return res.json({message: "Error when removing all pets: " + err})
+            }
+            return res.json({message: "All pets successfully removed."});
+        });
 });
 
 // -------------------------------------
 
 router.post('/user', (req, res, next) => {
-  fs.readFile(USERS, (err, data) => {
-    if (err || !data) { return next(err); }
-    const users = JSON.parse(data);
-    users.push({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      eMail: req.body.eMail
+    fs.readFile(USERS, (err, data) => {
+        if (err || !data) {
+            return next(err);
+        }
+        const users = JSON.parse(data);
+        users.push({
+            firstName: req.body.firstName,
+            lastName: req.body.lastName,
+            eMail: req.body.eMail
+        });
+        fs.writeFile(USERS, JSON.stringify(users), err => {
+            if (err) {
+                return next(err);
+            }
+            res.json({message: "User successfully added."});
+        });
     });
-    fs.writeFile(USERS, JSON.stringify(users), err => {
-      if (err) { return next(err); }
-      res.json({message: "User successfully added."});
-    });
-  });
 });
 
 // REGISTER OUR ROUTES -------------------------------
@@ -86,5 +107,5 @@ app.use('/', router);
 // START THE SERVER
 // =============================================================================
 app.listen(app.get('port'), () => {
-  console.log('Connect to the server via http://localhost:' + app.get('port'));
+    console.log('Connect to the server via http://localhost:' + app.get('port'));
 });

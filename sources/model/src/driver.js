@@ -13,11 +13,16 @@ const petType = () => chooseFrom(possiblePetTypes);
 
 const generatePet = () => ({petName: petName(), petPrice: petPrice(), petType: petType()});
 
+const resets = [
+    // delete all pets
+    () => ({url: "/reset", method: "DELETE"}),
+];
+
 const modifyingRequestGenerator = [
     // addPet
-    () => ({url: "/pets", method: "POST", json: true, data: generatePet()}),
+    () => ({url: "/pets", method: "POST", json: true, body: generatePet()}),
     // removePet
-    () => ({url: "/pets", method: "DELETE", json: true, data: generatePet()}),
+    () => ({url: "/pets", method: "DELETE", json: true, body: generatePet()}),
 ];
 
 const comparisons = [
@@ -82,7 +87,7 @@ const requestAndCompare = (item, callback) => {
     });
 };
 
-const requests = [];
+const requests = [resets[0]()];
 
 while (count < 10) {
     count++;

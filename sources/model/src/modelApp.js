@@ -11,7 +11,7 @@ const bodyParser = require('body-parser');
 
 const Model = require('./model');
 
-const model = new Model();
+let model = new Model();
 
 const app = express();                 // define our app using express
 
@@ -36,7 +36,7 @@ const router = express.Router();              // get an instance of the express 
 
 router.get('/pets', (req, res, next) => {
     const pets = model.pets().getPets();
-    res.json(pets);
+    res.json({tag: "Pets", pets});
 });
 
 router.post('/pets', (req, res, next) => {
@@ -47,6 +47,13 @@ router.post('/pets', (req, res, next) => {
 router.delete('/pets', (req, res, next) => {
     const message = model.pets().removePet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
     res.json({message});
+});
+
+// ===========================================================================
+
+router.delete('/reset', (req, res, next) => {
+    model = new Model();
+    res.json({message: "All pets successfully removed."});
 });
 
 // -------------------------------------

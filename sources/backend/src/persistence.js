@@ -59,8 +59,7 @@ module.exports = function (collectionName) {
     insert: function insert(object, callback) {
       performInDB((err, db) => {
         if (err) { return callback(err); }
-        const collection = db.collection(collectionName);
-        collection.insertOne(object, err1 => {
+          db.collection(collectionName).insertOne(object, err1 => {
           if (err1) { return callback(err1); }
           callback(null);
         });
@@ -70,8 +69,16 @@ module.exports = function (collectionName) {
     remove: function remove(objectFilter, callback) {
       performInDB((err, db) => {
         if (err) { return callback(err); }
-        const collection = db.collection(collectionName);
-        collection.deleteOne(objectFilter, err1 => {
+          db.collection(collectionName).deleteOne(objectFilter, err1 => {
+          callback(err1);
+        });
+      });
+    },
+
+    removeAll: function remove(callback) {
+      performInDB((err, db) => {
+        if (err) { return callback(err); }
+          db.collection(collectionName).deleteMany({}, err1 => {
           callback(err1);
         });
       });

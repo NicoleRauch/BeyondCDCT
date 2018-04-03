@@ -17,8 +17,10 @@ module.exports = {
   },
 
   removePet: function removePet(pet, callback) {
-    persistence.remove(pet, err => {
-      callback(err);
-    });
+    persistence.remove(pet, callback);
+  },
+
+  removeAllPets: function removeAllPets(callback) {
+    persistence.removeAll(callback);
   }
 };
