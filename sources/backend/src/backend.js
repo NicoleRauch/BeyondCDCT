@@ -10,6 +10,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
+const R = require('ramda');
 
 const petstore = require('./petstore');
 
@@ -42,8 +43,10 @@ router.get('/', (req, res) => {
 
 router.get('/pets', (req, res, next) => {
     petstore.allPets((err, pets) => {
-        if (err || !pets) { return next(err); }
-        return res.json({tag: "Pets", pets});
+        if (err || !pets) {
+            return next(err);
+        }
+        return res.json({tag: "Pets", pets: pets.map(p => R.omit(['_id'], p))});
     });
 });
 
