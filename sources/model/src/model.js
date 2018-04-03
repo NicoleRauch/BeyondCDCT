@@ -15,7 +15,7 @@ class Pets {
     }
 
     removePet(pet) {
-        this._pets = this._pets.filter(p => p.petName === pet.petName && p.petType === pet.petType);
+        this._pets = this._pets.filter(p => p.petName !== pet.petName && p.petType !== pet.petType);
         return "Pet successfully removed.";
     }
 }
