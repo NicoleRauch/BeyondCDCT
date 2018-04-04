@@ -1,4 +1,4 @@
-const { exec } = require("child_process");
+var cmd = require('node-cmd');
 const R = require("ramda");
 const async = require("async");
 
@@ -16,16 +16,16 @@ module.exports = {
         return string.split('"').join("'");
     },
 
-    formatDiff: function ({modelString, backendString}, callback) {
+    singleDiff: function([m, b], index) {
+        return m === b ? null : 'Difference in line '+index+':\nModel:\n' + this.singleQuote(m) + '\nBackend:\n' + this.singleQuote(b);
+    },
+
+    formatDiff: function ({modelString, backendString}) {
         const model = this.spliceString(modelString);
         const backend = this.spliceString(backendString);
         const pairs = R.zip(model, backend);
-        //console.log(model, backend)
 
-        async.map(pairs, ([m,b], cb) => exec("diff <(echo \"" + m + "\") <(echo \"" + b + "\")", (err, sto, ste) => {console.log(err, sto, ste); cb(err, sto);} ), function(err, results){
-            //results.filter()
-            callback(err, JSON.stringify(results));
-        });
+        return pairs.map(this.singleDiff.bind(this)).filter(R.identity);
     },
 
     format: function (diffs) {

@@ -49,14 +49,18 @@ describe("Formatting of the differences", function () {
             "}"]);
     });
 
-    it("formats one diff nicely", function (done) {
-        /*
-        formatter.formatDiff({modelString: object1, backendString: object2}, function (err, results) {
-            expect(results).to.eql([]);
-            done(err);
-        })
-        */
-        done();
+    it("converts to single quotes nicely", function () {
+       expect(formatter.singleQuote("a\"b\"c\"d")).to.eql("a'b'c'd");
+    });
+
+    it("checks identical and different strings nicely", function () {
+       expect(formatter.singleDiff(["aaa", "aaa"], 17)).to.be(null);
+       expect(formatter.singleDiff(["aaa", "aab"], 17)).to.eql('Difference in line 17:\nModel:\naaa\nBackend:\naab');
+    });
+
+    it("formats one diff nicely", function () {
+        const diffs = formatter.formatDiff({modelString: object1, backendString: object2});
+        expect(diffs).to.eql([]);
     });
 
     it("formats one diff result nicely", function () {
