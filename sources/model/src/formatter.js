@@ -1,6 +1,4 @@
-var cmd = require('node-cmd');
 const R = require("ramda");
-const async = require("async");
 
 
 module.exports = {
@@ -29,7 +27,7 @@ module.exports = {
     },
 
     format: function (diffs) {
-        const formattedDiffs = diffs.map(diff => this.formatDiff(diff));
+        return diffs.map(diff => this.formatDiff(diff));
 
     }
 };
