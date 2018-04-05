@@ -18,10 +18,10 @@ module.exports = {
         return m === b ? null : 'Difference in line '+index+':\nModel:\n' + this.singleQuote(m) + '\nBackend:\n' + this.singleQuote(b);
     },
 
-    formatDiff: function ({modelString, backendString}) {
-        const model = this.spliceString(modelString);
-        const backend = this.spliceString(backendString);
-        const pairs = R.zip(model, backend);
+    formatDiff: function ({model, backend}) {
+        const modelRows = this.spliceString(model);
+        const backendRows = this.spliceString(backend);
+        const pairs = R.zip(modelRows, backendRows);
 
         return pairs.map(this.singleDiff.bind(this)).filter(R.identity);
     },

@@ -59,15 +59,15 @@ describe("Formatting of the differences", function () {
     });
 
     it("formats one diff nicely", function () {
-        const diffs = formatter.formatDiff({modelString: object1, backendString: object2});
+        const diffs = formatter.formatDiff({model: object1, backend: object2});
         expect(diffs).to.eql(["Difference in line 9:\nModel:\n            'petName': 'B',\nBackend:\n            'petName': 'C',"]);
     });
 
     it("formats the overall diff result nicely", function () {
         const diffs = formatter.format([
-            {modelString: object1, backendString: object2},
-            {modelString: object1, backendString: object1},
-            {modelString: object2, backendString: object1}
+            {model: object1, backend: object2},
+            {model: object1, backend: object1},
+            {model: object2, backend: object1}
             ]);
         expect(diffs).to.eql([
             ["Difference in line 9:\nModel:\n            'petName': 'B',\nBackend:\n            'petName': 'C',"],

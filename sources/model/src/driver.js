@@ -47,14 +47,14 @@ function runAgainstBackend(req, mainCallback) {
     console.log("Now checking:", req);
 
     async.parallel({
-        backendString: function (callback) {
+        backend: function (callback) {
             request(merge(req, backend),
                 function (err, response) {
                     // console.log(err, response.body)
                     callback(err, response.body);
                 });
         },
-        modelString: function (callback) {
+        model: function (callback) {
             request(merge(req, model),
                 function (err, response) {
                     // console.log(err, response.body)
@@ -69,16 +69,16 @@ const requestAndCompare = (item, callback) => {
     console.log("Running the modification request:");
 
     runAgainstBackend(item, function (err, result) {
-        if (result.backendString !== result.modelString) {
-            console.log("Backend request result: ", result.backendString);
-            console.log("Model request result: ", result.modelString);
-            callback("Backend and Model differ!"); // error, bail out
+        const backendString = JSON.stringify(result.backend);
+        const modelString = JSON.stringify(result.model);
+        if (backendString !== modelString) {
+            callback("Backend and Model differ! Backend: " + backendString + " - Model: " + modelString); // error, bail out
         } else {
             console.log("Comparing all data:");
 
             async.map(comparisons, (itemFunc, callback) => runAgainstBackend(itemFunc(), callback),
                 function (err, results) {
-                    const nonmatching = results.filter(res => res.backendString !== res.modelString);
+                    const nonmatching = results.filter(res => JSON.stringify(res.backend) !== JSON.stringify(res.model));
                     if (nonmatching.length === 0) {
                         callback(null, "Backend and Model agree");
                     } else {
