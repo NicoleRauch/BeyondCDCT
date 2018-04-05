@@ -99,7 +99,7 @@ const requestAndCompare = (request, mainCallback) => {
 
 const requests = [resets[0]()];
 
-while (count < 10) {
+while (count < 50) {
     count++;
     requests.push(chooseFrom(modifyingRequestGenerator)());
 }

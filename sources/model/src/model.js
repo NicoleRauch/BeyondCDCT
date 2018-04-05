@@ -1,3 +1,4 @@
+const petSorter = require("./petSorter");
 
 class Pets {
     constructor(){
@@ -5,7 +6,7 @@ class Pets {
     }
 
     getPets() {
-        return this._pets;
+        return petSorter.sortPets(this._pets);
     }
 
     addPet(pet) {
