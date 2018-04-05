@@ -1,6 +1,9 @@
 const async = require('async');
 const request = require('request');
+const R = require("ramda");
 
+
+const formatter = require("./formatter");
 
 const possiblePetNames = ["A", "B", "C"];
 const possiblePetTypes = ["Cat", "Dog", "Canary", "Rabbit", "Fish"];
@@ -48,14 +51,14 @@ function runAgainstBackend(req, mainCallback) {
             request(merge(req, backend),
                 function (err, response) {
                     // console.log(err, response.body)
-                    callback(err, JSON.stringify(response.body));
+                    callback(err, response.body);
                 });
         },
         modelString: function (callback) {
             request(merge(req, model),
                 function (err, response) {
                     // console.log(err, response.body)
-                    callback(err, JSON.stringify(response.body));
+                    callback(err, response.body);
                 });
         }
     }, mainCallback);
@@ -75,12 +78,11 @@ const requestAndCompare = (item, callback) => {
 
             async.map(comparisons, (itemFunc, callback) => runAgainstBackend(itemFunc(), callback),
                 function (err, results) {
-                    console.log("after comparisons", results)
                     const nonmatching = results.filter(res => res.backendString !== res.modelString);
                     if (nonmatching.length === 0) {
                         callback(null, "Backend and Model agree");
                     } else {
-                        callback("Differences:" + JSON.stringify(nonmatching));
+                        callback(null, formatter.format(nonmatching));
                     }
                 });
         }
