@@ -2,12 +2,12 @@ const R = require("ramda");
 
 
 module.exports = {
-    formatString: function(string) {
-        return JSON.stringify(string, null, 4);
+    formatString: function(obj) {
+        return JSON.stringify(obj, null, 4);
     },
 
-    spliceString: function(string) {
-        return this.formatString(string).split("\n");
+    spliceString: function(obj) {
+        return this.formatString(obj).split("\n");
     },
 
     singleQuote: function(string) {
@@ -28,6 +28,5 @@ module.exports = {
 
     format: function (diffs) {
         return diffs.map(diff => this.formatDiff(diff));
-
     }
 };
