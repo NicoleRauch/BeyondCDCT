@@ -6,3 +6,10 @@ sources/model/node_modules
 **/pets.json
 **/users.json
 **/package-lock.json
+*.log
+*.nav
+*.out
+*.snm
+*.gz
+*.toc
+*.vrb
