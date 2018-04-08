@@ -16,7 +16,7 @@ HOW???
 
 \begin{center}
 {\Huge
-Standard Approach: ``Super-Na\"ive''
+``Super-Na\"ive'' Approach
 }
 \end{center}
 
@@ -78,66 +78,109 @@ But $\ldots$
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{Standard Approach: ``Still Quite Na\"ive''}
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+``Still Quite Na\"ive'' Approach
+}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{}
 
 \only<1>{
-\begin{itemize}
-\item Backend designs API
-\item Frontend writes mocks for backend API
-\item Backend is developed, tests are written
-\item Frontend can also be developed immediately
-\item Interaction tests for frontend use these mocks
-\end{itemize}
+\includegraphics[width=\textwidth]{images/still-quite-naive-approach-0.pdf}
 }
 
 \only<2>{
-Problems:
+\includegraphics[width=\textwidth]{images/still-quite-naive-approach-1.pdf}
+}
 
-\begin{itemize}
-\item Frontend relies on mocks for backend API
-\item Do the mocks reflect the backend's actual behaviour?
-\item Usually, backend behaviour changes
-\item Frontend does not notice because mocks still look good
-\end{itemize}
+\only<3>{
+\includegraphics[width=\textwidth]{images/still-quite-naive-approach-2.pdf}
+}
+
+\only<4>{
+\includegraphics[width=\textwidth]{images/still-quite-naive-approach-3.pdf}
+}
+
+\only<5>{
+\includegraphics[width=\textwidth]{images/still-quite-naive-approach-4.pdf}
+}
+
+\end{frame}
+
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+But $\ldots$
+}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{}
+
+\only<1>{
+\includegraphics[width=\textwidth]{images/still-quite-naive-approach-4.pdf}
+}
+
+\only<2>{
+\includegraphics[width=\textwidth]{images/still-quite-naive-approach-5.pdf}
+}
+
+\only<3>{
+\includegraphics[width=\textwidth]{images/still-quite-naive-approach-6.pdf}
+}
+
+\only<4>{
+\includegraphics[width=\textwidth]{images/still-quite-naive-approach-7.pdf}
 }
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{Standard ``Industry-Strength'' Approach}
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+``Industry-Strength'' Approach: \\[1em]
+Consumer-Driven Contract Testing
+}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{}
 
 \only<1>{
-\begin{itemize}
-\item Consumer-Driven Contract Testing
-\item Hand-written contracts
-\end{itemize}
-}
-
-\only<2>{
 \includegraphics[width=\textwidth]{images/CDCT1.pdf}
 }
 
-\only<3>{
+\only<2>{
 \includegraphics[width=\textwidth]{images/CDCT2.pdf}
 }
 
-\only<4>{
+\only<3>{
 \includegraphics[width=\textwidth]{images/CDCT3.pdf}
 }
 
-\only<5>{
+\only<4>{
 \includegraphics[width=\textwidth]{images/CDCT4.pdf}
 }
 
-\only<6>{
+\only<5>{
 \includegraphics[width=\textwidth]{images/CDCT5.pdf}
 }
 
-\only<7>{
+\only<6>{
 \includegraphics[width=\textwidth]{images/CDCT6.pdf}
 }
 
-\only<8>{
+\only<7>{
 \includegraphics[width=\textwidth]{images/CDCT7.pdf}
 }
 
