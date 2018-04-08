@@ -2,8 +2,9 @@ const R = require("ramda");
 
 module.exports = {
     sortPets: (pets) => {
-        const sortByType = R.sortBy(R.prop('petType'));
-        const sortByName = R.sortBy(R.prop('petName'));
-        return sortByName(sortByType(pets));
+        return R.sortWith([
+            R.ascend(R.prop('petName')),
+            R.ascend(R.prop('petType'))
+        ])(pets);
     }
 };
