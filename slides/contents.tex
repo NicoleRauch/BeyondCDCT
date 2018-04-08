@@ -1,50 +1,81 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\part{Consumer-Driven Contract Testing}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\begin{frame}[fragile]{Standard Problem for Webapps?}
+\begin{frame}[fragile]{Soooo...}
 
-\begin{itemize}
-\item Testing that frontend and backend play nicely together
-\end{itemize}
+we want to build this nice webapp
+
+we want to make sure that FE and BE play nicely together
+
+HOW???
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
 
-\begin{frame}[fragile]{The Interaction Problem}
-  \begin{center}
-    \includegraphics[height=.8\textheight]{./images/interaction-loop.pdf}
-  \end{center}
+\begin{center}
+{\Huge
+Standard Approach: ``Super-Na\"ive''
+}
+\end{center}
+
 \end{frame}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{Standard Approach: ``Super-Na\"ive''}
+\begin{frame}[fragile]{}
 
 \only<1>{
-\begin{itemize}
-\item Backend designs API
-\item Backend is developed, tests are written
-\item Frontend waits until backend is implemented
-\item Frontend is developed
-\item Tests for frontend are written
-\item Interaction is tested via integration tests
-\end{itemize}
+\includegraphics[width=\textwidth]{images/super-naive-approach-0.pdf}
 }
 
 \only<2>{
-Problems:
+\includegraphics[width=\textwidth]{images/super-naive-approach-1.pdf}
+}
 
-\begin{itemize}
-\item Frontend development is blocked
-\item Integration tests are slow
-\item Full integration testing does not scale
-\end{itemize}
+\only<3>{
+\includegraphics[width=\textwidth]{images/super-naive-approach-2.pdf}
+}
+
+\only<4>{
+\includegraphics[width=\textwidth]{images/super-naive-approach-3.pdf}
+}
+
+\only<5>{
+\includegraphics[width=\textwidth]{images/super-naive-approach-4.pdf}
 }
 
 \end{frame}
+
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+But $\ldots$
+}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{}
+
+\only<1>{
+\includegraphics[width=\textwidth]{images/super-naive-approach-4.pdf}
+}
+
+\only<2>{
+\includegraphics[width=\textwidth]{images/super-naive-approach-5.pdf}
+}
+
+\only<3>{
+\includegraphics[width=\textwidth]{images/super-naive-approach-6.pdf}
+}
+
+\only<4>{
+\includegraphics[width=\textwidth]{images/super-naive-approach-7.pdf}
+}
+
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{Standard Approach: ``Still Quite Na\"ive''}
@@ -124,7 +155,16 @@ Problems:
 
 \end{frame}
 
-\begin{frame}[fragile]{The Problem with CDCT}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+langsam auseinanderbauen, grafisch aufzeigen
+
+
+\begin{frame}[fragile]{The Problems with CDCT}
 
 \begin{itemize}[<+->]
 \item Provider testing must manually establish the desired state
@@ -133,6 +173,8 @@ Problems:
 \item Errors may only be discovered late in the process, when the backend implements some functionality and discovers that it does not match the contract
 \item If contracts are too sparse, we miss out
 \item If contracts are too verbose (or too many), testing takes too long
+
+  \item What if some request only makes sense in a certain state?
 \end{itemize}
 
 \end{frame}
