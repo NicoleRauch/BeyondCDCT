@@ -68,7 +68,8 @@ module.exports = function (collectionName) {
     remove: function remove(objectFilter, callback) {
       performInDB((err, db) => {
         if (err) { return callback(err); }
-        db.collection(collectionName).deleteOne(objectFilter, err1 => {
+        // db.collection(collectionName).deleteOne(objectFilter, err1 => {
+        db.collection(collectionName).remove(objectFilter, {w: 1}, err1 => {
           callback(err1);
         });
       });
