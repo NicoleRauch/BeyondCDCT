@@ -1,13 +1,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 \begin{frame}[fragile]{Soooo...}
 
-we want to build this nice webapp
+\begin{itemize}
 
-we want to make sure that FE and BE play nicely together
+\item We want to build this nice webapp
 
-HOW???
+\item We want to make sure that Frontend and Backend play nicely together
+
+\item HOW???
+
+\end{itemize}
 
 \end{frame}
 
@@ -186,20 +188,154 @@ Consumer-Driven Contract Testing
 
 \end{frame}
 
-\begin{frame}[fragile]{Example: Pet Store Contracts}
 
-\only<1>{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Example: Pet Store Contracts I}
+
   \lstinputlisting{contracts/nopets}
-}
 
-\only<2>{
-  \lstinputlisting{contracts/somepets}
-}
+\end{frame}
+
+
+\begin{frame}[fragile]{Situation}
+
+\begin{itemize}[<+->]
+\item GET-Request
+\item Does not depend on state
+\item Easy to handle with CDCT
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Questions}
+
+\begin{itemize}[<+->]
+\item Did we really document all requests (+ responses) in our contract?
+\end{itemize}
 
 \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Example: Pet Store Contracts II}
+
+  \lstinputlisting{contracts/somepets}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Situation}
+
+\begin{itemize}[<+->]
+\item GET-Request that depends on state
+\item POST-/PUT-/DELETE-Requests
+\item Difficult to handle with CDCT
+\item Backend state needs to be established somehow
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]{Questions}
+
+\begin{itemize}[<+->]
+\item Did we really document all requests (+ responses) in our contract?
+\item All possible combinations with different backend states?
+
+\vspace{1em}
+\item What are valid states in our stub?
+\item Did we always establish a valid state in our stub?
+\item How do we establish them (technically) before the request?
+\item How do we validate them after the request?
+
+\vspace{1em}
+\item How can we keep track of our contracts and avoid redundancies?
+\item How can we effectively maintain the contracts in case of changes?
+\end{itemize}
+
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+Can Formal Methods Help??
+}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
+
+ \begin{tikzpicture}
+ % x (kleiner = weiter nach links) y (kleiner = weiter nach unten)
+%             \put (-25,-157.3) 
+%{ \includegraphics[height=\paperheight]{images/boygroup.jpg} };
+             \put (-55,-157.3) 
+{ \includegraphics[height=\paperheight]{images/seraphino.jpg} };
+\end{tikzpicture}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
+
+\includegraphics[width=\textwidth]{images/statemachine.pdf}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+How to Use the Model?
+}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{}
+
+\only<1>{
+\includegraphics[width=\textwidth]{images/Model-1.pdf}
+}
+
+\only<2>{
+\includegraphics[width=\textwidth]{images/Model-2.pdf}
+}
+
+\only<3>{
+\includegraphics[width=\textwidth]{images/Model-3.pdf}
+}
+
+\only<4>{
+\includegraphics[width=\textwidth]{images/Model-4.pdf}
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+How does the Comparison work?
+}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Detour: Quick Check / Property-Based Testing}
+
+
+
+\end{frame}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -216,8 +352,9 @@ langsam auseinanderbauen, grafisch aufzeigen
 \item Errors may only be discovered late in the process, when the backend implements some functionality and discovers that it does not match the contract
 \item If contracts are too sparse, we miss out
 \item If contracts are too verbose (or too many), testing takes too long
+- Contract maintenance
 
-  \item What if some request only makes sense in a certain state?
+\item What if some request only makes sense in a certain state?
 \end{itemize}
 
 \end{frame}
@@ -303,20 +440,6 @@ petStore Add{pet}  store@PetStore{storedPets}
   \end{center}
 \end{frame}
 
-\begin{frame}[fragile]{The Code}
-  \begin{center}
-  \url{https://github.com/aleryo/homomorphic-event-sourcing}
-  \end{center}
-\end{frame}
-
-\begin{frame}[fragile]{Bug Trophy}
-  \begin{itemize}[<+->]
-  \item Incorrect routes definitions in the API leading to invalid queries
-  \item (\emph{v2}) Forgetting to move basket's content back to store when user logs out
-  \item (\emph{v2}) Bad copy/pasting leading to \texttt{RemovePet} actually adding it
-  \end{itemize}
-\end{frame}
-
 \begin{frame}[fragile]{Real World Application}
   \begin{itemize}[<+->]
   \item Testing Implementation of a Smart Contracts transaction scheduling platform
@@ -356,4 +479,18 @@ petStore Add{pet}  store@PetStore{storedPets}
     \item[Web] \href{http://www.nicole-rauch.de}{\texttt{http://www.nicole-rauch.de}}
     \end{description}
   \end{block}
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Credits}
+
+Models: Eva Rinaldi - Myer Spring Summer Fashion Launch \\
+{\footnotesize \url{https://www.flickr.com/photos/evarinaldiphotography/6032441835}}
+
+
+{\footnotesize \url{}}
+{\footnotesize \url{}}
+{\footnotesize \url{}}
+
 \end{frame}
