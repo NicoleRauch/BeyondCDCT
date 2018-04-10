@@ -1,4 +1,4 @@
-const petSorter = require("./petSorter");
+const petSorter = require('./petSorter');
 
 class Pets {
     constructor(){
@@ -10,14 +10,13 @@ class Pets {
     }
 
     addPet(pet) {
-        console.log("model adding", pet)
         this._pets.push(pet);
-        return "Pet successfully added.";
+        return 'Pet successfully added.';
     }
 
     removePet(pet) {
         this._pets = this._pets.filter(p => p.petName !== pet.petName || p.petType !== pet.petType);
-        return "Pet successfully removed.";
+        return 'Pet successfully removed.';
     }
 }
 
@@ -26,8 +25,6 @@ class Users {
         this._users = [];
     }
 }
-
-
 
 class Model {
     constructor() {
@@ -43,7 +40,6 @@ class Model {
         return this._users;
     }
 }
-
 
 
 module.exports = Model;

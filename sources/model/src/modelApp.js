@@ -34,26 +34,26 @@ app.use((req, res, next) => {
 const router = express.Router();              // get an instance of the express Router
 
 
-router.get('/pets', (req, res, next) => {
+router.get('/pets', (req, res) => {
     const pets = model.pets().getPets();
-    res.json({tag: "Pets", pets});
+    res.json({tag: 'Pets', pets});
 });
 
-router.post('/pets', (req, res, next) => {
+router.post('/pets', (req, res) => {
     const message = model.pets().addPet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
     res.json({message});
 });
 
-router.delete('/pets', (req, res, next) => {
+router.delete('/pets', (req, res) => {
     const message = model.pets().removePet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
     res.json({message});
 });
 
 // ===========================================================================
 
-router.delete('/reset', (req, res, next) => {
+router.delete('/reset', (req, res) => {
     model = new Model();
-    res.json({message: "All pets successfully removed."});
+    res.json({message: 'All pets successfully removed.'});
 });
 
 // -------------------------------------
@@ -69,7 +69,7 @@ router.post('/user', (req, res, next) => {
     });
     fs.writeFile(USERS, JSON.stringify(users), err => {
       if (err) { return next(err); }
-      res.json({message: "User successfully added."});
+      res.json({message: 'User successfully added.'});
     });
   });
 });
