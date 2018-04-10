@@ -39,34 +39,25 @@ const model = {baseURL: 'http://localhost:8080'};
 
 let count = 0;
 
-function merge(req, server) {
-    return Object.assign({}, req, {url: server.baseURL + req.url});
-}
+const merge = (req, server) => Object.assign({}, req, {url: server.baseURL + req.url});
 
-function runRequest(req, mainCallback) {
+
+const runRequest = (req, mainCallback) => {
     console.log('Now checking:', req);
 
     async.parallel({
-        backend: function (callback) {
-            request(merge(req, backend),
-                function (err, response) {
-                    callback(err, response.body);
-                });
-        },
-        model: function (callback) {
-            request(merge(req, model),
-                function (err, response) {
-                    callback(err, response.body);
-                });
-        }
+        backend: callback =>
+            request(merge(req, backend), (err, response) => callback(err, response.body)),
+        model: callback =>
+            request(merge(req, model), (err, response) => callback(err, response.body))
     }, mainCallback);
-}
+};
 
 const requestAndCompare = (request, mainCallback) => {
 
     console.log('Running the modification request:');
 
-    runRequest(request, function (err, result) {
+    runRequest(request, (err, result) => {
         const backendString = JSON.stringify(result.backend);
         const modelString = JSON.stringify(result.model);
         if (backendString !== modelString) {
@@ -74,7 +65,7 @@ const requestAndCompare = (request, mainCallback) => {
         } else {
             console.log('Comparing all data:');
 
-            async.map(comparisons, (itemFunc, callback) => runRequest(itemFunc(), function (err, res) {
+            async.map(comparisons, (itemFunc, callback) => runRequest(itemFunc(), (err, res) => {
                     if (res.backend === res.model) {
                         callback(null, null); // no differences
                     } else {
@@ -88,7 +79,7 @@ const requestAndCompare = (request, mainCallback) => {
                         callback(null, formatDiff);
                     }
                 }),
-                function (err, results) {
+                (err, results) => {
                     const nonmatching = results.filter(res => res !== null);
                     if (nonmatching.length === 0) {
                         mainCallback(null, 'Backend and Model contain the same data');
@@ -107,7 +98,7 @@ while (count < 50) {
     requests.push(chooseFrom(modifyingRequestGenerator)());
 }
 
-async.mapSeries(requests, requestAndCompare, function (err, results) {
+async.mapSeries(requests, requestAndCompare, (err, results) => {
     results.map(result => console.log(result));
     if (err) {
         console.log(err);
