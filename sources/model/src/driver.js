@@ -1,20 +1,20 @@
 const async = require('async');
 const request = require('request');
-const R = require('ramda');
+// const R = require('ramda');
 
 
 const formatter = require('./formatter');
 
-const possiblePetNames = ['A', 'B', 'C'];
-const possiblePetTypes = ['Cat', 'Dog', 'Canary', 'Rabbit', 'Fish'];
+const chooseFrom = arr => arr[Math.floor(arr.length * Math.random())];
 
-const chooseFrom = (arr) => arr[Math.floor(arr.length * Math.random())];
+const possibleNames = ['A', 'B', 'C'];
+const possibleSpecies = ['Cat', 'Dog', 'Canary', 'Rabbit', 'Fish'];
 
-const petName = () => chooseFrom(possiblePetNames);
-const petPrice = () => Math.floor(150 * Math.random());
-const petType = () => chooseFrom(possiblePetTypes);
+const name = () => chooseFrom(possibleNames);
+const price = () => Math.floor(150 * Math.random());
+const species = () => chooseFrom(possibleSpecies);
 
-const generatePet = () => ({petName: petName(), petPrice: petPrice(), petType: petType()});
+const randomPet = () => ({petName: name(), petPrice: price(), petType: species()});
 
 const resets = [
     // delete all pets
@@ -23,9 +23,9 @@ const resets = [
 
 const modifyingRequestGenerator = [
     // addPet
-    () => ({url: '/pets', method: 'POST', json: true, body: generatePet()}),
+    () => ({url: '/pets', method: 'POST', json: true, body: randomPet()}),
     // removePet
-    () => ({url: '/pets', method: 'DELETE', json: true, body: generatePet()}),
+    () => ({url: '/pets', method: 'DELETE', json: true, body: randomPet()}),
 ];
 
 const comparisons = [
@@ -43,7 +43,7 @@ function merge(req, server) {
     return Object.assign({}, req, {url: server.baseURL + req.url});
 }
 
-function runAgainstBackend(req, mainCallback) {
+function runRequest(req, mainCallback) {
     console.log('Now checking:', req);
 
     async.parallel({
@@ -66,7 +66,7 @@ const requestAndCompare = (request, mainCallback) => {
 
     console.log('Running the modification request:');
 
-    runAgainstBackend(request, function (err, result) {
+    runRequest(request, function (err, result) {
         const backendString = JSON.stringify(result.backend);
         const modelString = JSON.stringify(result.model);
         if (backendString !== modelString) {
@@ -74,16 +74,19 @@ const requestAndCompare = (request, mainCallback) => {
         } else {
             console.log('Comparing all data:');
 
-            async.map(comparisons, (itemFunc, callback) => runAgainstBackend(itemFunc(), function(err, res) {
-                if(res.backend === res.model){
-                    callback(null, null); // no differences
-                } else {
-                    const formatDiff = formatter.formatDiff({backend: JSON.parse(res.backend), model: JSON.parse(res.model)});
-                    console.log('Backend:', formatter.formatString(res.backend));
-                    console.log('Model:  ', formatter.formatString(res.model));
-                    console.log(formatDiff);
-                    callback(null, formatDiff);
-                }
+            async.map(comparisons, (itemFunc, callback) => runRequest(itemFunc(), function (err, res) {
+                    if (res.backend === res.model) {
+                        callback(null, null); // no differences
+                    } else {
+                        const formatDiff = formatter.formatDiff({
+                            backend: JSON.parse(res.backend),
+                            model: JSON.parse(res.model)
+                        });
+                        console.log('Backend:', formatter.formatString(res.backend));
+                        console.log('Model:  ', formatter.formatString(res.model));
+                        console.log(formatDiff);
+                        callback(null, formatDiff);
+                    }
                 }),
                 function (err, results) {
                     const nonmatching = results.filter(res => res !== null);
@@ -97,7 +100,7 @@ const requestAndCompare = (request, mainCallback) => {
     });
 };
 
-const requests = [resets[0]()];
+const requests = [resets[0]()]; // initial reset
 
 while (count < 50) {
     count++;
