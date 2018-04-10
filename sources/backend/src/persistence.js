@@ -92,7 +92,7 @@ module.exports = function (collectionName) {
     drop: function drop(callback) {
       performInDB((err, db) => {
         if (err) { return callback(err); }
-        logger.info('Drop ' + collectionName + ' called!');
+        console.log('Drop ' + collectionName + ' called!');
         db.dropCollection(collectionName, err1 => {
           callback(err1);
         });
@@ -110,7 +110,7 @@ module.exports = function (collectionName) {
       MongoClient.connect('mongodb://localhost:27017/cdct', (err, db) => {
         if (err) {
           ourDBConnectionState = DBSTATE.CLOSED;
-          return logger.error(err);
+          return console.log(err);
         }
         ourDB = db;
         ourDBConnectionState = DBSTATE.OPEN;

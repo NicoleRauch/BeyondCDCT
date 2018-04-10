@@ -5,7 +5,7 @@ const persistence = require('./persistence')('petstore');
 
 module.exports = {
   allPets: function allPets(callback) {
-    persistence.listByField({}, {petName: 1, petType: 1}, callback);
+    persistence.listByField({}, {petName: 1, petType: 1, petPrice: 1}, callback);
   },
 
   getPet: function getPet(pet, callback) {
