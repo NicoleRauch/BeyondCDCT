@@ -302,11 +302,11 @@ Can Formal Methods Help??
 
 \begin{center}
 {\Huge
-Sounds cool, but...
+Sounds cool, but$\ldots$
 
 \onslide<2->
 \vspace{1.5em}
-... how can I build this?
+$\ldots$how can I build this?
 }
 \end{center}
 
@@ -403,6 +403,28 @@ router.delete('/reset', (req, res) => {
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Isn't That The Same Code As The Backend?}
+
+\begin{itemize}
+\onslide<2->
+\item Maybe$\ldots$ but usually not:
+\onslide<3->
+\item Can be in another language
+\onslide<4->
+\item Can use simpler datatypes (e.g.~List vs.~HashMap)
+\onslide<5->
+\item No performance-tuning (e.g.~slower but simpler algorithms)
+\onslide<6->
+\item No technical overhead (e.g.~database)
+\onslide<7->
+\item Some parts can be left out
+\onslide<8->
+\item $\ldots$
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{}
 
 \begin{center}
@@ -456,7 +478,7 @@ How does the Comparison work?
 \end{itemize}
 
 \onslide+<3->
-\begin{lstlisting}[language=Haskell]
+\begin{lstlisting}
 prop_RevRev xs = reverse (reverse xs) == xs
   where types = xs::[Int]
 \end{lstlisting}
@@ -478,6 +500,136 @@ prop_RevId xs = reverse xs == xs
 Main> quickCheck prop_RevId
 Falsifiable, after 1 tests:
 [-3,15]
+\end{lstlisting}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+How to Mimic QuickCheck?
+}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{}
+
+\begin{center}
+\only<1>{
+\includegraphics[height=.9\textheight]{images/Comparator-1.pdf}
+}
+
+\only<2>{
+\includegraphics[height=.9\textheight]{images/Comparator-2.pdf}
+}
+
+\only<3>{
+\includegraphics[height=.9\textheight]{images/Comparator-3.pdf}
+}
+
+\only<4>{
+\includegraphics[height=.9\textheight]{images/Comparator-4.pdf}
+}
+
+\only<5>{
+\includegraphics[height=.9\textheight]{images/Comparator-5.pdf}
+}
+
+\only<6>{
+\includegraphics[height=.9\textheight]{images/Comparator-6.pdf}
+}
+
+\only<7>{
+\includegraphics[height=.9\textheight]{images/Comparator-7.pdf}
+}
+
+\only<8>{
+\includegraphics[height=.9\textheight]{images/Comparator-8.pdf}
+}
+\end{center}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+Comparator Implementation
+}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{Pet Generator}
+
+\begin{lstlisting}[language=JavaScript]
+const chooseFrom = arr => arr[Math.floor(arr.length * Math.random())];
+
+const possibleNames = ['A', 'B', 'C'];
+const possibleSpecies = ['Cat', 'Dog', 'Canary', 'Rabbit', 'Fish'];
+
+const name = () => chooseFrom(possibleNames);
+const price = () => Math.floor(150 * Math.random());
+const species = () => chooseFrom(possibleSpecies);
+
+const randomPet = () => 
+          ({petName: name(), petPrice: price(), petType: species()});
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{Request Generator}
+
+\begin{lstlisting}[language=JavaScript]
+const resets = [
+    // delete all pets
+    () => ({url: '/reset', method: 'DELETE'}),
+];
+
+const modifyingRequestGenerator = [
+    // addPet
+    () => ({url: '/pets', method: 'POST', json: true, body: randomPet()}),
+    // removePet
+    () => ({url: '/pets', method: 'DELETE', json: true, body: randomPet()})
+];
+
+const comparisons = [
+    // getPets
+    () => ({url: '/pets', method: 'GET'}),
+];
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{Query Submission}
+
+\begin{lstlisting}[language=JavaScript]
+function merge(req, server) {
+    return Object.assign({}, req, {url: server.baseURL + req.url});
+}
+function runRequest(req, mainCallback) {
+    console.log('Now checking:', req);
+    async.parallel({
+        backend: function (callback) {
+            request(merge(req, backend),
+                function (err, response) {
+                    callback(err, response.body);
+                });
+        },
+        model: function (callback) {
+            request(merge(req, model),
+                function (err, response) {
+                    callback(err, response.body);
+                });
+        }
+    }, mainCallback);
+}
 \end{lstlisting}
 
 \end{frame}
