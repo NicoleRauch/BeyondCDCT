@@ -188,6 +188,16 @@ Consumer-Driven Contract Testing
 
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Example: Pet Store Domain}
+
+\begin{itemize}
+\item List all pets
+\item Add pet
+\item Remove pet
+\end{itemize}
+
+\end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{Example: Pet Store Contracts I}
@@ -230,6 +240,7 @@ Consumer-Driven Contract Testing
 \item POST-/PUT-/DELETE-Requests
 \item Difficult to handle with CDCT
 \item Backend state needs to be established somehow
+\item State checks need to be established somehow
 \end{itemize}
 \end{frame}
 
@@ -285,6 +296,112 @@ Can Formal Methods Help??
 
 \end{frame}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
+
+\begin{center}
+{\Huge
+Sounds cool, but...
+
+\onslide<2->
+\vspace{1.5em}
+... how can I build this?
+}
+\end{center}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Building a State Machine}
+
+\begin{itemize}
+\item Implements the functionality
+\item In the simplest possible way
+\item In any language
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{The Pets Model}
+
+\begin{lstlisting}[language=JavaScript]
+class Pets {
+    constructor(){
+        this._pets = [];
+    }
+
+    getPets() {
+        return petSorter.sortPets(this._pets);
+    }
+
+    addPet(pet) {
+        this._pets.push(pet);
+        return 'Pet successfully added.';
+    }
+
+    removePet(pet) {
+        this._pets = this._pets.filter(
+            p => p.petName !== pet.petName || p.petType !== pet.petType);
+        return 'Pet successfully removed.';
+    }
+}
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{The Overall Model}
+
+\begin{lstlisting}[language=Javascript]
+class Model {
+    constructor() {
+        this._pets = new Pets();
+    }
+
+    pets() {
+        return this._pets;
+    }
+}
+\end{lstlisting}
+
+\end{frame}
+
+\begin{frame}[fragile]{The Model App}
+
+\begin{lstlisting}[language=Javascript]
+let model = new Model();
+
+router.get('/pets', (req, res) => {
+    const pets = model.pets().getPets();
+    res.json({tag: 'Pets', pets});
+});
+
+router.post('/pets', (req, res) => {
+    const message = model.pets().addPet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
+    res.json({message});
+});
+
+router.delete('/pets', (req, res) => {
+    const message = model.pets().removePet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
+    res.json({message});
+});
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Important Addition}
+
+\begin{lstlisting}[language=Javascript]
+router.delete('/reset', (req, res) => {
+    model = new Model();
+    res.json({message: 'All pets successfully removed.'});
+});
+\end{lstlisting}
+
+\end{frame}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{}
 
@@ -331,7 +448,37 @@ How does the Comparison work?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{Detour: Quick Check / Property-Based Testing}
 
+\onslide+<2->
+\begin{itemize}
+\item User specifies properties
+\item Tool generates examples
+\item Checks properties against examples
+\end{itemize}
 
+\onslide+<3->
+\begin{lstlisting}[language=Haskell]
+prop_RevRev xs = reverse (reverse xs) == xs
+  where types = xs::[Int]
+\end{lstlisting}
+
+\onslide+<4->
+\begin{lstlisting}
+Main> quickCheck prop_RevRev
+OK, passed 100 tests.
+\end{lstlisting}
+
+\onslide+<5->
+\begin{lstlisting}
+prop_RevId xs = reverse xs == xs
+  where types = xs::[Int]
+\end{lstlisting}
+
+\onslide+<6->
+\begin{lstlisting}
+Main> quickCheck prop_RevId
+Falsifiable, after 1 tests:
+[-3,15]
+\end{lstlisting}
 
 \end{frame}
 
