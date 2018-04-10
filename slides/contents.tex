@@ -610,26 +610,23 @@ const comparisons = [
 \begin{frame}[fragile]{Query Submission}
 
 \begin{lstlisting}[language=JavaScript]
-function merge(req, server) {
-    return Object.assign({}, req, {url: server.baseURL + req.url});
-}
-function runRequest(req, mainCallback) {
+const backend = {baseURL: 'http://localhost:9090'};
+const model = {baseURL: 'http://localhost:8080'};
+
+const merge = (req, server) => 
+        Object.assign({}, req, {url: server.baseURL + req.url});
+
+const requestFunctionFor = (req, server) =>
+    callback => request(merge(req, server), 
+                        (err, response) => callback(err, response.body));
+
+const runRequest = (req, callback) => {
     console.log('Now checking:', req);
     async.parallel({
-        backend: function (callback) {
-            request(merge(req, backend),
-                function (err, response) {
-                    callback(err, response.body);
-                });
-        },
-        model: function (callback) {
-            request(merge(req, model),
-                function (err, response) {
-                    callback(err, response.body);
-                });
-        }
-    }, mainCallback);
-}
+        backend: requestFunctionFor(req, backend),
+        model: requestFunctionFor(req, model)
+    }, callback);
+};
 \end{lstlisting}
 
 \end{frame}

@@ -37,21 +37,20 @@ const comparisons = [
 const backend = {baseURL: 'http://localhost:9090'};
 const model = {baseURL: 'http://localhost:8080'};
 
-let count = 0;
-
 const merge = (req, server) => Object.assign({}, req, {url: server.baseURL + req.url});
 
+const requestFunctionFor = (req, server) =>
+        callback => request(merge(req, server), (err, response) => callback(err, response.body));
 
-const runRequest = (req, mainCallback) => {
+
+const runRequest = (req, callback) => {
     console.log('Now checking:', req);
-
     async.parallel({
-        backend: callback =>
-            request(merge(req, backend), (err, response) => callback(err, response.body)),
-        model: callback =>
-            request(merge(req, model), (err, response) => callback(err, response.body))
-    }, mainCallback);
+        backend: requestFunctionFor(req, backend),
+        model: requestFunctionFor(req, model)
+    }, callback);
 };
+
 
 const requestAndCompare = (request, mainCallback) => {
 
@@ -92,6 +91,8 @@ const requestAndCompare = (request, mainCallback) => {
 };
 
 const requests = [resets[0]()]; // initial reset
+
+let count = 0;
 
 while (count < 50) {
     count++;
