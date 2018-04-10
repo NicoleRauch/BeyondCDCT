@@ -656,15 +656,61 @@ async.mapSeries(requests, requestAndCompare, (err, results) => {
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Error Discovery in CDCT}
+
+\begin{itemize}[<+->]
+\item Backend may discover mismatches
+\item Maybe contract has an error
+\item Might happen late during development
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]{Error Discovery in ``Beyond CDCT''}
+
+\begin{itemize}[<+->]
+\item We can run comparator against model
+\item This may indicate oversights in model
+\item Right at the start before development even begins
+\end{itemize}
+
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{}
 
-langsam auseinanderbauen, grafisch aufzeigen
+\begin{center}
+{\Huge
+What can we discover?
+}
+\end{center}
+
+\end{frame}
 
 
-\begin{frame}[fragile]{The Problems with CDCT}
+\begin{frame}[fragile]{}
 
-Errors may only be discovered late in the process, when the backend implements some functionality and discovers that it does not match the contract
+\begin{center}
+\only<1>{
+\includegraphics[height=.9\textheight]{images/Issues-0.pdf}
+}
+
+\only<2>{
+\includegraphics[height=.9\textheight]{images/Issues-1.pdf}
+}
+
+\only<3>{
+\includegraphics[height=.9\textheight]{images/Issues-1-2.pdf}
+}
+
+\only<4>{
+\includegraphics[height=.9\textheight]{images/Issues-2.pdf}
+}
+
+\only<5>{
+\includegraphics[height=.9\textheight]{images/Issues-2-2.pdf}
+}
+\end{center}
 
 \end{frame}
 
@@ -692,12 +738,11 @@ Errors may only be discovered late in the process, when the backend implements s
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Credits}
 
-Models: Eva Rinaldi - Myer Spring Summer Fashion Launch \\
-{\footnotesize \url{https://www.flickr.com/photos/evarinaldiphotography/6032441835}}
+%Models: Eva Rinaldi - Myer Spring Summer Fashion Launch \\
+%{\footnotesize \url{https://www.flickr.com/photos/evarinaldiphotography/6032441835}}
 
+Model: Scooter Lowrimore - New Model Series: Seraphino- \#FS09
+{\footnotesize \url{https://www.flickr.com/photos/vesparado/7720504762}}
 
-{\footnotesize \url{}}
-{\footnotesize \url{}}
-{\footnotesize \url{}}
 
 \end{frame}
