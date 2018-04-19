@@ -223,7 +223,7 @@ Consumer-Driven Contract Testing
 \begin{itemize}[<+->]
 \item Completeness
 \begin{itemize}
-\item Did we really document all requests (+ responses) in our contract?
+\item Did we really capture all requests (+ responses) in our contract?
 \end{itemize}
 \end{itemize}
 
@@ -255,7 +255,7 @@ Consumer-Driven Contract Testing
 \begin{itemize}[<+->]
 \item Completeness
 \begin{itemize}
-\item Did we really document all requests (+ responses) in our contract?
+\item Did we really capture all requests (+ responses) in our contract?
 \item All possible combinations with different backend states?
 \end{itemize}
 
@@ -762,70 +762,110 @@ async.mapSeries(requests, requestAndCompare, (err, results) => {
 \end{frame}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{Error Discovery in CDCT}
+\begin{frame}[fragile]{Questions -- and Answers}
 
+\begin{itemize}
+\item Completeness
+\begin{itemize}
+\item Did we really capture all requests (+ responses) in our contract?
+\item All possible combinations with different backend states?
+\end{itemize}
+\end{itemize}
+
+\onslide<+->
 \begin{itemize}[<+->]
-\item Backend may discover mismatches
-\item Maybe contract has an error
-\item Might happen late during development
+\item CDCT:
+\begin{itemize}
+\item We must write all tests ourselves
+\item We are responsible for completeness
+\end{itemize}
+\vspace{.4em}
+\item Beyond CDCT:
+\begin{itemize}
+\item QuickCheck approach: We don't write tests
+\item We only specify the possible routes
+\item Completeness is established over time
+\end{itemize}
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}[fragile]{Error Discovery in ``Beyond CDCT''}
 
+\begin{frame}[fragile]{Questions -- and Answers}
+
+\begin{itemize}
+\item State Validity
+\begin{itemize}
+\item What are valid states in our stub?
+\item Did we always establish a valid state in our stub?
+\item How do we establish them (technically) before the request?
+\item How do we validate them after the (modifying) request?
+\end{itemize}
+\end{itemize}
+
+\onslide<+->
 \begin{itemize}[<+->]
-\item We can run comparator against model
-\item This may indicate oversights in model
-\item Right at the start before development even begins
+\item CDCT:
+\begin{itemize}
+\item We establish the state ourselves for each test
+\item We are responsible for the state's correctness
+\end{itemize}
+\vspace{.4em}
+\item Beyond CDCT:
+\begin{itemize}
+\item The state is established through API calls
+\item The state is always reachable and correct$^{*}$
+\end{itemize}
+\end{itemize}
+
+\onslide<+->
+ $^{*}$Assuming no coding errors!
+ 
+\end{frame}
+
+
+\begin{frame}[fragile]{Questions -- and Answers}
+
+\begin{itemize}
+\item Maintenance
+\begin{itemize}
+\item How can we keep track of our contracts and avoid redundancies?
+\item How can we effectively maintain the contracts in case of changes?
+\end{itemize}
+\end{itemize}
+
+\onslide<+->
+\begin{itemize}[<+->]
+\item CDCT:
+\begin{itemize}
+\item As difficult as maintaining normal tests
+\item Code coverage helps identify uncovered areas
+\end{itemize}
+\vspace{.4em}
+\item Beyond CDCT:
+\begin{itemize}
+\item We need to make sure that the driver knows all routes
+\item Code coverage helps identify missing routes
+\item Missing routes in Essence will be discovered because of errors
+\item Missing logic in the Essence will be discovered
+\begin{itemize}
+\item initially because of unexpected behaviour when prototyping
+\item later because of comparison errors
+\end{itemize}
+\end{itemize}
 \end{itemize}
 
 \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{}
-
-\begin{center}
-{\Huge
-What can we discover?
-}
-\end{center}
-
-\end{frame}
-
-
-\begin{frame}[fragile]{}
-
-\begin{center}
-\only<1>{
-\includegraphics[height=.9\textheight]{images/Issues-0.pdf}
-}
-
-\only<2>{
-\includegraphics[height=.9\textheight]{images/Issues-1.pdf}
-}
-
-\only<3>{
-\includegraphics[height=.9\textheight]{images/Issues-1-2.pdf}
-}
-
-\only<4>{
-\includegraphics[height=.9\textheight]{images/Issues-2.pdf}
-}
-
-\only<5>{
-\includegraphics[height=.9\textheight]{images/Issues-2-2.pdf}
-}
-\end{center}
-
-\end{frame}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{Management Summary}
+\begin{frame}[fragile]{A Word of Warning}
 
-???
+\begin{itemize}[<+->]
+\item This is not an easy solution. The world remains complicated.
+\item This is not a golden hammer. Don't apply it everywhere.
+\item This is rather at the top of the test pyramid.
+\end{itemize}
 
 \end{frame}
 
@@ -841,6 +881,14 @@ What can we discover?
     \item[Web] \href{http://www.nicole-rauch.de}{\texttt{http://www.nicole-rauch.de}}
     \end{description}
   \end{block}
+
+\begin{center}
+EventStorming $\cdot$ Domain-Driven Design \\
+Software Craftsmanship \\ 
+React.js and Redux  \\
+Functional Programming
+\end{center}  
+
 \end{frame}
 
 
