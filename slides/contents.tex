@@ -387,13 +387,20 @@ $\ldots$how can I build this?
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{Building a Functional Essence}
+\begin{frame}[fragile]{How to Build a Functional Essence}
 
-\begin{itemize}
-\item Implements the functionality
+\begin{itemize}[<+->]
+\item Implement the domain logic
 \item In the simplest possible way
 \item In an arbitrary language
 \end{itemize}
+
+\vspace{2em}
+
+\onslide<+->
+\begin{center}
+\includegraphics[width=.3\textwidth]{images/essence_large.jpg}
+\end{center}
 
 \end{frame}
 
@@ -430,10 +437,15 @@ class Pets {
 class Essence {
     constructor() {
         this._pets = new Pets();
+        this._somethingElse = new SomethingElse();
     }
 
     pets() {
         return this._pets;
+    }
+    
+    somethingElse() {
+        return this._somethingElse;
     }
 }
 \end{lstlisting}
@@ -653,7 +665,7 @@ const comparisons = [
 
 \begin{lstlisting}[language=JavaScript]
 const backend = {baseURL: 'http://localhost:9090'};
-const model = {baseURL: 'http://localhost:8080'};
+const essence = {baseURL: 'http://localhost:8080'};
 
 const merge = (req, server) => 
         Object.assign({}, req, {url: server.baseURL + req.url});
@@ -666,12 +678,65 @@ const runRequest = (req, callback) => {
     console.log('Now checking:', req);
     async.parallel({
         backend: requestFunctionFor(req, backend),
-        model: requestFunctionFor(req, model)
+        essence: requestFunctionFor(req, essence)
     }, callback);
 };
 \end{lstlisting}
 
 \end{frame}
+
+\begin{frame}[fragile]{Request-Compare-Loop}
+
+\begin{lstlisting}[language=JavaScript]
+const requestAndCompare = (request, mainCallback) => {
+
+    console.log('Running the modification request:');
+
+    runRequest(request, (err, result) => {
+        const backendString = JSON.stringify(result.backend);
+        const essenceString = JSON.stringify(result.essence);
+        
+        if (backendString !== essenceString) {
+            mainCallback('Backend and Essence responses differ! Backend: ' + backendString + ' - Essence: ' + essenceString);
+            
+        } else {
+            
+            console.log('Comparing all data:');
+            compareEverything(mainCallback);
+        }
+    });
+};
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Comparisons}
+
+\begin{lstlisting}[language=JavaScript]
+function compareEverything(mainCallback) {
+    async.map(comparisons, (itemFunc, callback) => 
+        runRequest(itemFunc(), (err, res) => {
+            if (res.backend === res.essence) {
+                callback(null, null); // no differences
+            } else {
+                const formatDiff = formatter.formatDiff({
+                    backend: JSON.parse(res.backend),
+                    essence: JSON.parse(res.essence)
+                });
+                callback(null, formatDiff);
+            }
+        }),
+        (err, results) => {
+            const nonmatching = results.filter(x => x);
+            mainCallback(nonmatching.length
+                    ? 'Backend and Essence differ in their data' : null);
+        });
+}
+\end{lstlisting}
+
+\end{frame}
+
 
 
 \begin{frame}[fragile]{The Main Loop}
