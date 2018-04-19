@@ -35,7 +35,7 @@ const comparisons = [
 
 
 const backend = {baseURL: 'http://localhost:9090'};
-const model = {baseURL: 'http://localhost:8080'};
+const essence = {baseURL: 'http://localhost:8080'};
 
 const merge = (req, server) => Object.assign({}, req, {url: server.baseURL + req.url});
 
@@ -47,22 +47,22 @@ const runRequest = (req, callback) => {
     console.log('Now checking:', req);
     async.parallel({
         backend: requestFunctionFor(req, backend),
-        model: requestFunctionFor(req, model)
+        essence: requestFunctionFor(req, essence)
     }, callback);
 };
 
 
 function compareEverything(mainCallback) {
     async.map(comparisons, (itemFunc, callback) => runRequest(itemFunc(), (err, res) => {
-            if (res.backend === res.model) {
+            if (res.backend === res.essence) {
                 callback(null, null); // no differences
             } else {
                 const formatDiff = formatter.formatDiff({
                     backend: JSON.parse(res.backend),
-                    model: JSON.parse(res.model)
+                    essence: JSON.parse(res.essence)
                 });
                 console.log('Backend:', formatter.formatString(res.backend));
-                console.log('Model:  ', formatter.formatString(res.model));
+                console.log('Essence:  ', formatter.formatString(res.essence));
                 console.log(formatDiff);
                 callback(null, formatDiff);
             }
@@ -70,9 +70,9 @@ function compareEverything(mainCallback) {
         (err, results) => {
             const nonmatching = results.filter(res => res !== null);
             if (nonmatching.length === 0) {
-                mainCallback(null, 'Backend and Model contain the same data');
+                mainCallback(null, 'Backend and Essence contain the same data');
             } else {
-                mainCallback('Backend and Model differ in their data');
+                mainCallback('Backend and Essence differ in their data');
             }
         });
 }
@@ -83,9 +83,9 @@ const requestAndCompare = (request, mainCallback) => {
 
     runRequest(request, (err, result) => {
         const backendString = JSON.stringify(result.backend);
-        const modelString = JSON.stringify(result.model);
-        if (backendString !== modelString) {
-            mainCallback('Backend and Model responses differ! Backend: ' + backendString + ' - Model: ' + modelString); // error, bail out
+        const essenceString = JSON.stringify(result.essence);
+        if (backendString !== essenceString) {
+            mainCallback('Backend and Essence responses differ! Backend: ' + backendString + ' - Essence: ' + essenceString); // error, bail out
         } else {
             console.log('Comparing all data:');
             compareEverything(mainCallback);
