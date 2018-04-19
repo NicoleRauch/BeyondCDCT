@@ -52,6 +52,31 @@ const runRequest = (req, callback) => {
 };
 
 
+function compareEverything(mainCallback) {
+    async.map(comparisons, (itemFunc, callback) => runRequest(itemFunc(), (err, res) => {
+            if (res.backend === res.model) {
+                callback(null, null); // no differences
+            } else {
+                const formatDiff = formatter.formatDiff({
+                    backend: JSON.parse(res.backend),
+                    model: JSON.parse(res.model)
+                });
+                console.log('Backend:', formatter.formatString(res.backend));
+                console.log('Model:  ', formatter.formatString(res.model));
+                console.log(formatDiff);
+                callback(null, formatDiff);
+            }
+        }),
+        (err, results) => {
+            const nonmatching = results.filter(res => res !== null);
+            if (nonmatching.length === 0) {
+                mainCallback(null, 'Backend and Model contain the same data');
+            } else {
+                mainCallback('Backend and Model differ in their data');
+            }
+        });
+}
+
 const requestAndCompare = (request, mainCallback) => {
 
     console.log('Running the modification request:');
@@ -63,29 +88,7 @@ const requestAndCompare = (request, mainCallback) => {
             mainCallback('Backend and Model responses differ! Backend: ' + backendString + ' - Model: ' + modelString); // error, bail out
         } else {
             console.log('Comparing all data:');
-
-            async.map(comparisons, (itemFunc, callback) => runRequest(itemFunc(), (err, res) => {
-                    if (res.backend === res.model) {
-                        callback(null, null); // no differences
-                    } else {
-                        const formatDiff = formatter.formatDiff({
-                            backend: JSON.parse(res.backend),
-                            model: JSON.parse(res.model)
-                        });
-                        console.log('Backend:', formatter.formatString(res.backend));
-                        console.log('Model:  ', formatter.formatString(res.model));
-                        console.log(formatDiff);
-                        callback(null, formatDiff);
-                    }
-                }),
-                (err, results) => {
-                    const nonmatching = results.filter(res => res !== null);
-                    if (nonmatching.length === 0) {
-                        mainCallback(null, 'Backend and Model contain the same data');
-                    } else {
-                        mainCallback('Backend and Model differ in their data');
-                    }
-                });
+            compareEverything(mainCallback);
         }
     });
 };
