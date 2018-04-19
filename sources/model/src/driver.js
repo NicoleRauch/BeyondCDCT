@@ -68,12 +68,8 @@ function compareEverything(mainCallback) {
             }
         }),
         (err, results) => {
-            const nonmatching = results.filter(res => res !== null);
-            if (nonmatching.length === 0) {
-                mainCallback(null);
-            } else {
-                mainCallback('Backend and Essence differ in their data');
-            }
+            const nonmatching = results.filter(x => x);
+            mainCallback(nonmatching.length ? 'Backend and Essence differ in their data' : null);
         });
 }
 
