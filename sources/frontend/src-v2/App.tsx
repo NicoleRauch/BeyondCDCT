@@ -9,7 +9,7 @@ import PetList from './PetList';
 import UserLogin from './UserLogin';
 import {isNullOrUndefined} from 'util';
 
-export class ViewComponent extends Component<Props> {
+export class AppComponent extends Component<Props> {
 
     componentWillMount() {
         this.props.dispatch(loadPets());
@@ -25,4 +25,4 @@ export class ViewComponent extends Component<Props> {
     }
 }
 
-export default connect((state: Model) => state)(ViewComponent);
+export default connect((state: Model) => state)(AppComponent);

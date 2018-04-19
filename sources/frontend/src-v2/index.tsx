@@ -8,7 +8,7 @@ import thunk from 'redux-thunk';
 
 import reducers from "./reducers";
 
-import View from "./View";
+import View from "./App";
 
 
 const store = createStore(reducers,
