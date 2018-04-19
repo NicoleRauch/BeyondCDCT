@@ -70,7 +70,7 @@ function compareEverything(mainCallback) {
         (err, results) => {
             const nonmatching = results.filter(res => res !== null);
             if (nonmatching.length === 0) {
-                mainCallback(null, 'Backend and Essence contain the same data');
+                mainCallback(null);
             } else {
                 mainCallback('Backend and Essence differ in their data');
             }
@@ -103,7 +103,8 @@ while (count < 50) {
 }
 
 async.mapSeries(requests, requestAndCompare, (err, results) => {
-    results.map(result => console.log(result));
+    console.log(results.length + " calls were executed.");
+    results.filter(x => x).map(result => console.log(result));
     if (err) {
         console.log(err);
     }
