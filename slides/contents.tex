@@ -3,10 +3,12 @@
 
 \begin{itemize}
 
-\item We want to build this nice webapp
+\item We want to build this nice webapp / distributed system / these microservices
 
-\item We want to make sure that Frontend and Backend play nicely together
+\item We want to make sure ``Frontend'' and ``Backend'' play nicely together
 
+\onslide<2->
+\vspace{1.5em}
 \item HOW???
 
 \end{itemize}
@@ -219,7 +221,10 @@ Consumer-Driven Contract Testing
 \begin{frame}[fragile]{Questions}
 
 \begin{itemize}[<+->]
+\item Completeness
+\begin{itemize}
 \item Did we really document all requests (+ responses) in our contract?
+\end{itemize}
 \end{itemize}
 
 \end{frame}
@@ -248,20 +253,28 @@ Consumer-Driven Contract Testing
 \begin{frame}[fragile]{Questions}
 
 \begin{itemize}[<+->]
+\item Completeness
+\begin{itemize}
 \item Did we really document all requests (+ responses) in our contract?
 \item All possible combinations with different backend states?
+\end{itemize}
 
 \vspace{1em}
+\item State Validity
+\begin{itemize}
 \item What are valid states in our stub?
 \item Did we always establish a valid state in our stub?
 \item How do we establish them (technically) before the request?
-\item How do we validate them after the request?
+\item How do we validate them after the (modifying) request?
+\end{itemize}
 
 \vspace{1em}
+\item Maintenance
+\begin{itemize}
 \item How can we keep track of our contracts and avoid redundancies?
 \item How can we effectively maintain the contracts in case of changes?
 \end{itemize}
-
+\end{itemize}
 
 \end{frame}
 
@@ -270,8 +283,16 @@ Consumer-Driven Contract Testing
 
 \begin{center}
 {\Huge
-Can Formal Methods Help??
+We need the Functional Essence!
 }
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{}
+\vspace{-.65em}
+\begin{center}
+\includegraphics[height=\paperheight]{images/essence_large}
 \end{center}
 
 \end{frame}
@@ -279,20 +300,73 @@ Can Formal Methods Help??
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{}
 
- \begin{tikzpicture}
- % x (kleiner = weiter nach links) y (kleiner = weiter nach unten)
-%             \put (-25,-157.3) 
-%{ \includegraphics[height=\paperheight]{images/boygroup.jpg} };
-             \put (-55,-157.3) 
-{ \includegraphics[height=\paperheight]{images/seraphino.jpg} };
-\end{tikzpicture}
+\begin{center}
+{\Huge
+Sounds cool, but$\ldots$
+
+\onslide<2->
+\vspace{1.5em}
+$\ldots$what does that mean?
+}
+\end{center}
 
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Functional Essence}
+
+\begin{itemize}[<+->]
+\item Fake Server
+\item Lightweight Implementation
+
+\vspace{1em}
+
+\item Model
+
+\vspace{1em}
+
+\item Rapid Prototype
+\item Minimal Viable Product
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[fragile]{Functional Essence is Multi-Purpose}
+
+\begin{itemize}[<+->]
+\item Learn about the domain
+\item Discuss with domain experts
+\item Validate assumptions at an early stage
+
+\vspace{1em}
+
+\item Check real implementation:
+\end{itemize}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% TODO Essence in Bilder einfügen
+
 \begin{frame}[fragile]{}
 
-\includegraphics[width=\textwidth]{images/statemachine.pdf}
+\only<1>{
+\includegraphics[width=\textwidth]{images/Model-1.pdf}
+}
+
+\only<2>{
+\includegraphics[width=\textwidth]{images/Model-2.pdf}
+}
+
+\only<3>{
+\includegraphics[width=\textwidth]{images/Model-3.pdf}
+}
+
+\only<4>{
+\includegraphics[width=\textwidth]{images/Model-4.pdf}
+}
 
 \end{frame}
 
@@ -313,17 +387,17 @@ $\ldots$how can I build this?
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{Building a State Machine}
+\begin{frame}[fragile]{Building a Functional Essence}
 
 \begin{itemize}
 \item Implements the functionality
 \item In the simplest possible way
-\item In any language
+\item In an arbitrary language
 \end{itemize}
 
 \end{frame}
 
-\begin{frame}[fragile]{The Pets Model}
+\begin{frame}[fragile]{The Pets Essence}
 
 \begin{lstlisting}[language=JavaScript]
 class Pets {
@@ -350,10 +424,10 @@ class Pets {
 
 \end{frame}
 
-\begin{frame}[fragile]{The Overall Model}
+\begin{frame}[fragile]{The Overall Essence}
 
 \begin{lstlisting}[language=Javascript]
-class Model {
+class Essence {
     constructor() {
         this._pets = new Pets();
     }
@@ -366,23 +440,23 @@ class Model {
 
 \end{frame}
 
-\begin{frame}[fragile]{The Model App}
+\begin{frame}[fragile]{The Essence App}
 
 \begin{lstlisting}[language=Javascript]
-let model = new Model();
+let essence = new Essence();
 
 router.get('/pets', (req, res) => {
-    const pets = model.pets().getPets();
+    const pets = essence.pets().getPets();
     res.json({tag: 'Pets', pets});
 });
 
 router.post('/pets', (req, res) => {
-    const message = model.pets().addPet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
+    const message = essence.pets().addPet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
     res.json({message});
 });
 
 router.delete('/pets', (req, res) => {
-    const message = model.pets().removePet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
+    const message = essence.pets().removePet({ petName: req.body.petName, petPrice: req.body.petPrice, petType: req.body.petType });
     res.json({message});
 });
 \end{lstlisting}
@@ -394,7 +468,7 @@ router.delete('/pets', (req, res) => {
 
 \begin{lstlisting}[language=Javascript]
 router.delete('/reset', (req, res) => {
-    model = new Model();
+    essence = new Essence();
     res.json({message: 'All pets successfully removed.'});
 });
 \end{lstlisting}
@@ -421,38 +495,6 @@ router.delete('/reset', (req, res) => {
 \onslide<8->
 \item $\ldots$
 \end{itemize}
-
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{}
-
-\begin{center}
-{\Huge
-How to Use the Model?
-}
-\end{center}
-
-\end{frame}
-
-
-\begin{frame}[fragile]{}
-
-\only<1>{
-\includegraphics[width=\textwidth]{images/Model-1.pdf}
-}
-
-\only<2>{
-\includegraphics[width=\textwidth]{images/Model-2.pdf}
-}
-
-\only<3>{
-\includegraphics[width=\textwidth]{images/Model-3.pdf}
-}
-
-\only<4>{
-\includegraphics[width=\textwidth]{images/Model-4.pdf}
-}
 
 \end{frame}
 
@@ -716,10 +758,12 @@ What can we discover?
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[fragile]{Takeaways}
-  \only<1>{\Huge \begin{quote} Plans are worthless,\\ but planning is everything \\ \textsc{\Large Dwight D. Eisenhower}\end{quote}}
-  \only<2>{\Huge \begin{quote} Models are worthless,\\ but modelling is everything \\ \textsc{\Large Nicole \& Arnaud}\end{quote}}
+\begin{frame}[fragile]{Management Summary}
+
+???
+
 \end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Thank you very much!}
@@ -738,11 +782,8 @@ What can we discover?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Credits}
 
-%Models: Eva Rinaldi - Myer Spring Summer Fashion Launch \\
-%{\footnotesize \url{https://www.flickr.com/photos/evarinaldiphotography/6032441835}}
-
-Model: Scooter Lowrimore - New Model Series: Seraphino- \#FS09
-{\footnotesize \url{https://www.flickr.com/photos/vesparado/7720504762}}
+Essence: Mark Morgan - Perfume
+{\footnotesize \url{https://www.flickr.com/photos/markmorgantrinidad/5959461561}}
 
 
 \end{frame}
