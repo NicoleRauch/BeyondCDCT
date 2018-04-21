@@ -1,5 +1,6 @@
 import React from 'react';
 import {Pet} from './types';
+import PetSale from "./PetSale";
 
 
 const pictures : { [index:string] : string } = {
@@ -11,8 +12,10 @@ const pictures : { [index:string] : string } = {
 };
 
 
-export default ({name, species}: Pet) => (
-    <div>
-        <img height="20" src={pictures[species]}/><span>{name}</span><br/>
-    </div>
+export default ({pet, petSaleOK, sellPet}: {pet:Pet, petSaleOK: boolean, sellPet: any}) => (
+    <tr key={pet.name + '#' + pet.species}>
+        <td><img height="20" src={pictures[pet.species]}/></td>
+        <td><span>{pet.name}</span></td>
+        {petSaleOK ? <td style={{marginLeft: "10px"}}><PetSale pet={pet} sellPet={sellPet}/></td> : null}
+    </tr>
 );

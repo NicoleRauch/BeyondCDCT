@@ -8,10 +8,10 @@ export default ({pets, sellPet, petSaleOK}: { pets: Pet[], sellPet: any, petSale
     !pets || !pets.length ? null :
         <div>
             <h3>Pets in our Store</h3>
-            <ul>
-                {pets.map((pet: Pet) => <span key={pet.name + '#' + pet.species}>
-                    <PetView {...pet} />{petSaleOK ? <PetSale pet={pet} sellPet={sellPet}/> : null}
-                </span>)}
-            </ul>
+            <table>
+                <tbody>
+                {pets.map((pet: Pet) => <PetView pet={pet} petSaleOK={petSaleOK} sellPet={sellPet} key={pet.name + "-" + pet.species}/>)}
+                </tbody>
+            </table>
         </div>
 );

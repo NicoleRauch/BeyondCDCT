@@ -19,10 +19,11 @@ export class AppComponent extends Component<Props> {
         return <div>
             <h2>Welcome to our Pet Store</h2>
             <PetAdmission admitPet={(pet:Pet) => this.props.dispatch(addAndSubmitPet(pet))} />
-            <PetList pets={this.props.pets} sellPet={(pet:Pet) => this.props.dispatch(sellPet(pet))} petSaleOK={this.props.user !== null} />
-            <UserLogin user={this.props.user} loginUser={(name:string) => this.props.dispatch(loginAndSubmitUser(name))} />
+            <PetList pets={this.props.pets} sellPet={(pet:Pet) => this.props.dispatch(sellPet(pet))} petSaleOK={true} />
         </div>;
     }
 }
+//            <PetList pets={this.props.pets} sellPet={(pet:Pet) => this.props.dispatch(sellPet(pet))} petSaleOK={this.props.user !== null} />
+//            <UserLogin user={this.props.user} loginUser={(name:string) => this.props.dispatch(loginAndSubmitUser(name))} />
 
 export default connect((state: Model) => state)(AppComponent);
