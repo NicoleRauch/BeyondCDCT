@@ -493,6 +493,9 @@ router.delete('/reset', (req, res) => {
 });
 \end{lstlisting}
 
+\onslide+<2->
+Also for the real backend!
+
 \end{frame}
 
 
@@ -628,24 +631,30 @@ Comparator Implementation
 
 \end{frame}
 
-\begin{frame}[fragile]{Pet Generator}
+% --------------------------------------------
+\begin{frame}[fragile]{The Main Loop}
 
 \begin{lstlisting}[language=JavaScript]
-const chooseFrom = arr => arr[Math.floor(arr.length * Math.random())];
+const requests = [resets[0]()]; // initial reset
 
-const possibleNames = ['A', 'B', 'C'];
-const possibleSpecies = ['Cat', 'Dog', 'Canary', 'Rabbit', 'Fish'];
+let count = 0;
 
-const name = () => chooseFrom(possibleNames);
-const price = () => Math.floor(150 * Math.random());
-const species = () => chooseFrom(possibleSpecies);
+while (count < 50) {
+    count++;
+    requests.push(chooseFrom(modifyingRequestGenerator)());
+}
 
-const randomPet = () => 
-          ({petName: name(), petPrice: price(), petType: species()});
+async.mapSeries(requests, requestAndCompare, (err, results) => {
+    results.map(result => console.log(result));
+    if (err) {
+        console.log(err);
+    }
+});
 \end{lstlisting}
 
 \end{frame}
 
+% ----------------------------------
 \begin{frame}[fragile]{Request Generator}
 
 \begin{lstlisting}[language=JavaScript]
@@ -669,30 +678,50 @@ const comparisons = [
 
 \end{frame}
 
-\begin{frame}[fragile]{Query Submission}
+
+% ----------------------------------
+\begin{frame}[fragile]{Pet Generator}
 
 \begin{lstlisting}[language=JavaScript]
-const backend = {baseURL: 'http://localhost:9090'};
-const essence = {baseURL: 'http://localhost:8080'};
+const chooseFrom = arr => arr[Math.floor(arr.length * Math.random())];
 
-const merge = (req, server) => 
-        Object.assign({}, req, {url: server.baseURL + req.url});
+const possibleNames = ['Minka', 'Fifi', 'Pucki'];
+const possibleSpecies = ['Cat', 'Dog', 'Canary', 'Rabbit', 'Fish'];
 
-const requestFunctionFor = (req, server) =>
-    callback => request(merge(req, server), 
-                        (err, response) => callback(err, response.body));
+const name = () => chooseFrom(possibleNames);
+const price = () => Math.floor(150 * Math.random());
+const species = () => chooseFrom(possibleSpecies);
 
-const runRequest = (req, callback) => {
-    console.log('Now checking:', req);
-    async.parallel({
-        backend: requestFunctionFor(req, backend),
-        essence: requestFunctionFor(req, essence)
-    }, callback);
-};
+const randomPet = () => 
+          ({petName: name(), petPrice: price(), petType: species()});
 \end{lstlisting}
 
 \end{frame}
 
+% --------------------------------------------
+\begin{frame}[fragile]{Revisiting the Main Loop}
+
+\begin{lstlisting}[language=JavaScript]
+const requests = [resets[0]()]; // initial reset
+
+let count = 0;
+
+while (count < 50) {
+    count++;
+    requests.push(chooseFrom(modifyingRequestGenerator)());
+}
+
+async.mapSeries(requests, requestAndCompare, (err, results) => {
+    results.map(result => console.log(result));
+    if (err) {
+        console.log(err);
+    }
+});
+\end{lstlisting}
+
+\end{frame}
+
+% ----------------------------------
 \begin{frame}[fragile]{Request-Compare-Loop}
 
 \begin{lstlisting}[language=JavaScript]
@@ -719,6 +748,32 @@ const requestAndCompare = (request, mainCallback) => {
 \end{frame}
 
 
+% -----------------------------------
+\begin{frame}[fragile]{Query Submission}
+
+\begin{lstlisting}[language=JavaScript]
+const backend = {baseURL: 'http://localhost:9090'};
+const essence = {baseURL: 'http://localhost:8080'};
+
+const merge = (req, server) => 
+        Object.assign({}, req, {url: server.baseURL + req.url});
+
+const requestFunctionFor = (req, server) =>
+    callback => request(merge(req, server), 
+                        (err, response) => callback(err, response.body));
+
+const runRequest = (req, callback) => {
+    console.log('Now checking:', req);
+    async.parallel({
+        backend: requestFunctionFor(req, backend),
+        essence: requestFunctionFor(req, essence)
+    }, callback);
+};
+\end{lstlisting}
+
+\end{frame}
+
+% ------------------------------------------
 \begin{frame}[fragile]{Comparisons}
 
 \begin{lstlisting}[language=JavaScript]
@@ -747,29 +802,7 @@ function compareEverything(mainCallback) {
 
 
 
-\begin{frame}[fragile]{The Main Loop}
-
-\begin{lstlisting}[language=JavaScript]
-const requests = [resets[0]()]; // initial reset
-
-let count = 0;
-
-while (count < 50) {
-    count++;
-    requests.push(chooseFrom(modifyingRequestGenerator)());
-}
-
-async.mapSeries(requests, requestAndCompare, (err, results) => {
-    results.map(result => console.log(result));
-    if (err) {
-        console.log(err);
-    }
-});
-\end{lstlisting}
-
-\end{frame}
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{Questions -- and Answers}
 
 \begin{itemize}
@@ -852,7 +885,7 @@ async.mapSeries(requests, requestAndCompare, (err, results) => {
 \vspace{.4em}
 \item Beyond CDCT:
 \begin{itemize}
-\item We need to make sure that the driver knows all routes
+\item We need to make sure that the comparator knows all routes
 \item Code coverage helps identify missing routes
 \item Missing routes in Essence will be discovered because of errors
 \item Missing logic in the Essence will be discovered
