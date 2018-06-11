@@ -356,8 +356,6 @@ $\ldots$what does that mean?
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TODO Essence in Bilder einfügen
-
 \begin{frame}[fragile]{}
 
 \only<1>{
@@ -411,6 +409,13 @@ $\ldots$how can I build this?
 \end{center}
 
 \end{frame}
+
+\begin{frame}[fragile]{}
+
+\includegraphics[width=\textwidth]{images/Essence-4.pdf}
+
+\end{frame}
+
 
 \begin{frame}[fragile]{The Pets Essence}
 
@@ -524,6 +529,12 @@ Also for the real backend!
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[fragile]{}
 
+\includegraphics[width=\textwidth]{images/Essence-4.pdf}
+
+\end{frame}
+
+\begin{frame}[fragile]{}
+
 \begin{center}
 {\Huge
 How does the Comparison work?
@@ -544,27 +555,30 @@ How does the Comparison work?
 
 \onslide+<3->
 \begin{lstlisting}
+prop_RevRev :: [Int] ->	Bool
 prop_RevRev xs = reverse (reverse xs) == xs
-  where types = xs::[Int]
 \end{lstlisting}
 
 \onslide+<4->
 \begin{lstlisting}
-Main> quickCheck prop_RevRev
-OK, passed 100 tests.
+*Main> quickCheck prop_RevRev
++++ OK, passed 100 tests.
 \end{lstlisting}
 
 \onslide+<5->
 \begin{lstlisting}
+prop_RevId :: [Int] -> Bool
 prop_RevId xs = reverse xs == xs
-  where types = xs::[Int]
 \end{lstlisting}
 
 \onslide+<6->
 \begin{lstlisting}
-Main> quickCheck prop_RevId
-Falsifiable, after 1 tests:
-[-3,15]
+*Main> quickCheck prop_RevId 
+*** Failed! Falsifiable (after 7 tests and 3 shrinks):    
+[0,1]
+*Main> quickCheck prop_RevId 
+*** Failed! Falsifiable (after 4 tests and 1 shrink):     
+[1,0]
 \end{lstlisting}
 
 \end{frame}
@@ -627,6 +641,14 @@ How to Mimic QuickCheck?
 {\Huge
 Comparator Implementation
 }
+\end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]{}
+
+\begin{center}
+\includegraphics[height=.9\textheight]{images/wtfperminute.jpg}
 \end{center}
 
 \end{frame}
@@ -940,5 +962,7 @@ Functional Programming
 Essence: Mark Morgan - Perfume
 {\footnotesize \url{https://www.flickr.com/photos/markmorgantrinidad/5959461561}}
 
+WTF's per minute: Tom Holwerda
+{\footnotesize \url{http://www.osnews.com/story/19266/WTFs_m}}
 
 \end{frame}
