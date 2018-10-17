@@ -576,6 +576,11 @@ prop_RevId xs = reverse xs == xs
 *Main> quickCheck prop_RevId 
 *** Failed! Falsifiable (after 7 tests and 3 shrinks):    
 [0,1]
+\end{lstlisting}
+
+\onslide+<7->
+\vspace{-0.55em}
+\begin{lstlisting}
 *Main> quickCheck prop_RevId 
 *** Failed! Falsifiable (after 4 tests and 1 shrink):     
 [1,0]
@@ -663,7 +668,7 @@ let count = 0;
 
 while (count < 50) {
     count++;
-    requests.push(chooseFrom(modifyingRequestGenerator)());
+    requests.push(chooseFrom(modifyingRequests)());
 }
 
 async.mapSeries(requests, requestAndCompare, (err, results) => {
@@ -685,7 +690,7 @@ const resets = [
     () => ({url: '/reset', method: 'DELETE'}),
 ];
 
-const modifyingRequestGenerator = [
+const modifyingRequests = [
     // addPet
     () => ({url: '/pets', method: 'POST', json: true, body: randomPet()}),
     // removePet
@@ -730,7 +735,7 @@ let count = 0;
 
 while (count < 50) {
     count++;
-    requests.push(chooseFrom(modifyingRequestGenerator)());
+    requests.push(chooseFrom(modifyingRequests)());
 }
 
 async.mapSeries(requests, requestAndCompare, (err, results) => {

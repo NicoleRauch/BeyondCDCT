@@ -21,7 +21,7 @@ const resets = [
     () => ({url: '/reset', method: 'DELETE'}),
 ];
 
-const modifyingRequestGenerator = [
+const modifyingRequests = [
     // addPet
     () => ({url: '/pets', method: 'POST', json: true, body: randomPet()}),
     // removePet
@@ -95,7 +95,7 @@ let count = 0;
 
 while (count < 50) {
     count++;
-    requests.push(chooseFrom(modifyingRequestGenerator)());
+    requests.push(chooseFrom(modifyingRequests)());
 }
 
 async.mapSeries(requests, requestAndCompare, (err, results) => {
